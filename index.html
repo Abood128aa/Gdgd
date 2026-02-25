@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -39,8 +39,6 @@
             box-shadow: 0 25px 45px rgba(0,0,0,0.1);
             max-width: 380px; width: 85%;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            transform: translateY(0);
-            transition: all 0.5s ease;
             animation: fadeIn 1.2s ease-out;
         }
 
@@ -50,95 +48,74 @@
         }
 
         .img-wrapper {
-            position: relative;
             cursor: zoom-in;
             margin-bottom: 40px;
             display: inline-block;
-            perspective: 1000px;
         }
 
         .profile-img {
-            width: 190px;
-            height: 190px;
+            width: 190px; height: 190px;
             border-radius: 30px;
             border: 6px solid rgba(255, 255, 255, 0.8);
             object-fit: cover;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.5s ease;
         }
 
-        .img-wrapper:hover .profile-img {
-            transform: rotateY(10deg) rotateX(10deg) scale(1.05);
-        }
+        .img-wrapper:hover .profile-img { transform: scale(1.05); }
 
         .buttons-container { display: flex; flex-direction: column; gap: 20px; }
 
         .btn {
-            position: relative;
             text-decoration: none; padding: 18px;
             border-radius: 20px; font-weight: bold;
             transition: all 0.3s ease; cursor: pointer;
             border: none; font-size: 17px; text-align: center;
-            overflow: hidden;
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        .btn-profile { 
-            background: var(--fb-color); 
-            color: white;
-            box-shadow: 0 10px 20px rgba(24, 119, 242, 0.3);
-        }
-
-        .btn-surprise { 
-            background: var(--main-color); 
-            color: white; 
-            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
-            animation: pulse 2s infinite;
-        }
+        .btn-profile { background: var(--fb-color); color: white; }
+        .btn-surprise { background: var(--main-color); color: white; animation: pulse 2s infinite; }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
+            0%, 100% { transform: scale(1); }
             50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
         }
 
-        .btn:active { transform: scale(0.95); }
-
-        /* نافذة المفاجأة الماركة */
+        /* نافذة المفاجأة (الفيديو) */
         #surprise-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); justify-content: center; align-items: center;
-            z-index: 1000; color: white; text-align: center; padding: 25px;
-            backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.95); justify-content: center; align-items: center;
+            z-index: 1000; flex-direction: column;
         }
 
-        #typing-text {
-            font-size: 1.8rem;
-            background: linear-gradient(to right, #ff4d6d, #ff758f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: bold;
+        .video-container {
+            width: 90%; max-width: 500px;
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 0 50px var(--main-color);
+        }
+
+        iframe { width: 100%; aspect-ratio: 16/9; border: none; }
+
+        .close-btn {
+            margin-top: 20px; padding: 10px 30px;
+            background: white; color: black; border-radius: 50px;
+            cursor: pointer; font-weight: bold;
         }
 
         /* نافذة تكبير الصورة */
         #image-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); justify-content: center; align-items: center;
-            z-index: 2000; cursor: zoom-out;
+            background: rgba(0,0,0,0.9); justify-content: center; align-items: center;
+            z-index: 2000;
         }
 
-        #image-overlay img {
-            max-width: 90%; max-height: 85%;
-            border-radius: 15px;
-            transform: scale(0.8);
-            transition: transform 0.4s ease;
-        }
+        #image-overlay img { max-width: 90%; max-height: 80%; border-radius: 15px; }
 
         .heart { position: absolute; font-size: 25px; pointer-events: none; animation: fall linear forwards; z-index: 50; }
 
         @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
@@ -146,72 +123,60 @@
 
     <div class="container">
         <div class="img-wrapper" onclick="openLightbox()">
-            <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" alt="Special Image" class="profile-img">
+            <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" alt="Profile Image" class="profile-img">
         </div>
         
         <div class="buttons-container">
             <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-profile">
-                <span>👤</span> زيارة الحساب الشخصي
+                👤 زيارة الحساب الشخصي
             </a>
             <button onclick="showSurprise()" class="btn btn-surprise">
-                <span>🎁</span> اكتشفي المفاجأة
+                🎁 افتحي المفاجأة
             </button>
         </div>
     </div>
 
-    <div id="image-overlay" onclick="closeLightbox()">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" id="zoomed-img" alt="Zoomed">
+    <div id="surprise-overlay">
+        <div class="video-container">
+            <iframe id="video-frame" src="" allow="autoplay"></iframe>
+        </div>
+        <div class="close-btn" onclick="closeSurprise()">إغلاق المفاجأة ✖</div>
     </div>
 
-    <div id="surprise-overlay" onclick="this.style.display='none'">
-        <div>
-            <h2 id="typing-text"></h2>
-            <p style="margin-top: 30px; color: #aaa; font-size: 0.9rem;">(انقري في أي مكان للعودة)</p>
-        </div>
+    <div id="image-overlay" onclick="closeLightbox()">
+        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" alt="Zoomed">
     </div>
 
     <script>
-        function openLightbox() {
-            const overlay = document.getElementById('image-overlay');
-            const img = document.getElementById('zoomed-img');
-            overlay.style.display = 'flex';
-            setTimeout(() => { img.style.transform = 'scale(1)'; }, 10);
-        }
-
-        function closeLightbox() {
-            const img = document.getElementById('zoomed-img');
-            img.style.transform = 'scale(0.8)';
-            setTimeout(() => { document.getElementById('image-overlay').style.display = 'none'; }, 300);
-        }
+        function openLightbox() { document.getElementById('image-overlay').style.display = 'flex'; }
+        function closeLightbox() { document.getElementById('image-overlay').style.display = 'none'; }
 
         function showSurprise() {
-            document.getElementById('surprise-overlay').style.display = 'flex';
-            const text = "أنتِ كالفراشة.. تُضفين الجمال أينما حللتِ! ✨🦋";
-            let i = 0;
-            const element = document.getElementById('typing-text');
-            element.innerHTML = "";
-            
-            function typeWriter() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, 100);
-                }
-            }
-            typeWriter();
+            const overlay = document.getElementById('surprise-overlay');
+            const video = document.getElementById('video-frame');
+            // الرابط المستخدم هو للدمج (Embed) مع خاصية التشغيل التلقائي
+            video.src = "https://streamable.com/e/2u533q?autoplay=1"; 
+            overlay.style.display = 'flex';
             createHearts();
         }
 
+        function closeSurprise() {
+            const overlay = document.getElementById('surprise-overlay');
+            const video = document.getElementById('video-frame');
+            video.src = ""; // إيقاف الفيديو عند الإغلاق
+            overlay.style.display = 'none';
+        }
+
         function createHearts() {
-            const emojis = ['❤️', '✨', '🌸', '💖'];
-            for(let i=0; i<50; i++) {
+            const emojis = ['❤️', '✨', '💖'];
+            for(let i=0; i<40; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.classList.add('heart');
                     heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
                     heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.top = '-5vh';
                     heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
                     document.body.appendChild(heart);
                     setTimeout(() => heart.remove(), 5000);
                 }, i * 100);
