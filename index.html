@@ -3,230 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>غدوش: التجربة السينمائية 🎭</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&family=Lalezar&family=Cairo:wght@900&family=Reem+Kufi:wght@700&display=swap" rel="stylesheet">
+    <title>Ghadoush Universe ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@900&family=Tajawal:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --accent: #ff4d6d;
-            --accent-glow: rgba(255, 77, 109, 0.5);
-            --glass: rgba(255, 255, 255, 0.1);
+            --neon: #ff0055;
+            --neon-bg: rgba(255, 0, 85, 0.2);
+            --glass: rgba(0, 0, 0, 0.7);
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%;
-            font-family: 'Tajawal', sans-serif;
-            background: #050505; color: white;
-            overflow: hidden;
+        body, html { 
+            height: 100%; width: 100%; 
+            font-family: 'Tajawal', sans-serif; 
+            background: #000; overflow: hidden;
         }
 
-        /* خلفية الجزيئات المتحركة */
-        #canvas-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+        /* حاوية الفيديو العملاقة - ملء الشاشة */
+        #video-bg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+        #video-bg-container iframe {
+            width: 100vw; height: 100vh;
+            transform: scale(1.5); /* لإخفاء حواف المشغل */
+            pointer-events: none;
         }
 
-        /* الشاشة الرئيسية */
-        .viewport {
-            position: relative; height: 100vh; width: 100%; z-index: 10;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: all 1s cubic-bezier(0.7, 0, 0.3, 1);
+        /* واجهة التحكم العلوية */
+        .top-bar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 6px;
+            background: rgba(255,255,255,0.1); z-index: 1000;
+        }
+        #progress-line {
+            height: 100%; width: 0%; background: var(--neon);
+            box-shadow: 0 0 15px var(--neon); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .hero-img {
-            width: 200px; height: 200px; border-radius: 50%;
-            background: url('https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg') center/cover;
-            border: 4px solid var(--accent);
-            box-shadow: 0 0 50px var(--accent-glow);
-            margin-bottom: 30px;
-            animation: float 4s ease-in-out infinite;
+        /* الطبقة الشفافة فوق الفيديو */
+        .overlay-content {
+            position: relative; z-index: 100; height: 100vh;
+            display: flex; flex-direction: column; justify-content: space-between;
+            align-items: center; padding: 40px 20px;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8));
+            transition: opacity 1s;
         }
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-
-        /* الأزرار الاحترافية */
-        .btn-box {
-            display: flex; flex-direction: column; gap: 20px; width: 85%; max-width: 400px;
+        /* نص الجملة الاحترافي */
+        #dynamic-quote {
+            text-align: center; color: white; font-weight: 900;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 0 40px var(--neon);
+            max-width: 90%; line-height: 1.4;
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.6s ease;
         }
 
-        .main-button {
-            position: relative; padding: 25px; border-radius: 20px;
-            border: none; background: var(--accent);
-            color: white; font-size: 24px; font-weight: 900;
-            cursor: pointer; overflow: hidden;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px var(--accent-glow);
+        /* زر الإعادة المصغر والاحترافي */
+        .retry-circle {
+            width: 70px; height: 70px;
+            background: var(--glass);
+            border: 2px solid var(--neon);
+            border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 20px var(--neon-bg);
+            margin-bottom: 20px;
         }
+        .retry-circle:hover { transform: scale(1.1) rotate(180deg); background: var(--neon); }
+        .retry-circle span { font-size: 10px; color: white; font-weight: bold; margin-top: 2px; }
 
-        .main-button::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: 0.5s;
+        /* الشاشة الافتتاحية */
+        #welcome-screen {
+            position: fixed; inset: 0; z-index: 2000;
+            background: radial-gradient(circle at center, #111, #000);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: transform 1s cubic-bezier(1, 0, 0, 1);
         }
-
-        .main-button:hover::before { left: 100%; }
-        .main-button:hover { transform: scale(1.05) translateY(-5px); box-shadow: 0 20px 40px var(--accent-glow); }
-        .main-button:active { transform: scale(0.95); }
-
-        /* شاشة العرض */
-        #display-screen {
-            position: fixed; top: 100%; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 100;
-            display: flex; flex-direction: column;
-            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        .main-btn {
+            background: transparent; color: white; border: 2px solid var(--neon);
+            padding: 20px 50px; border-radius: 50px; font-size: 24px; font-family: 'Lalezar';
+            cursor: pointer; box-shadow: 0 0 30px var(--neon-bg);
+            transition: 0.3s;
         }
+        .main-btn:hover { background: var(--neon); transform: scale(1.05); }
 
-        .screen-active { transform: translateY(-100%); }
-
-        .video-wrapper {
-            position: relative; width: 100%; height: 60vh;
-            border-bottom: 2px solid var(--accent);
+        /* قلوب وانفجارات */
+        .heart-pop {
+            position: absolute; pointer-events: none;
+            animation: popOut 1s ease-out forwards;
         }
-
-        .content-area {
-            flex: 1; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; padding: 30px; background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-        }
-
-        #dynamic-msg {
-            font-size: 2.5rem; text-align: center; font-weight: 900;
-            margin-bottom: 30px; min-height: 80px;
-            text-shadow: 0 0 20px rgba(255,255,255,0.3);
-        }
-
-        .stats-badge {
-            background: var(--glass); padding: 10px 25px; border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px;
-            font-size: 14px; letter-spacing: 2px;
-        }
-
-        #progress-bar { color: var(--accent); font-weight: 900; font-size: 20px; }
-
-        .retry-button {
-            background: white; color: black; padding: 20px 50px;
-            border-radius: 50px; font-size: 22px; font-weight: 900;
-            border: none; cursor: pointer; transition: 0.3s;
-        }
-
-        /* قلوب الـ Action */
-        .particle {
-            position: absolute; pointer-events: none; z-index: 1000;
-            animation: fly 3s ease-out forwards;
-        }
-
-        @keyframes fly {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--x), var(--y)) rotate(360deg) scale(0); opacity: 0; }
+        @keyframes popOut {
+            0% { transform: scale(0) translate(0,0); opacity: 1; }
+            100% { transform: scale(1.5) translate(var(--tx), var(--ty)); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="canvas-bg"></canvas>
+    <div class="top-bar"><div id="progress-line"></div></div>
 
-    <div class="viewport" id="main-ui">
-        <div class="hero-img"></div>
-        <div class="btn-box">
-            <button class="main-button" onclick="launch()">افتحي عالم غدوش 🎭✨</button>
-            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" 
-               style="text-align: center; color: #888; text-decoration: none; font-size: 14px;">الحساب الشخصي 👤</a>
-        </div>
+    <div id="welcome-screen">
+        <div style="font-size: 80px; margin-bottom: 20px;">🌹</div>
+        <button class="main-btn" onclick="initExperience()">عالم غدوش الخرافي ✨</button>
     </div>
 
-    <div id="display-screen">
-        <div class="video-wrapper">
-            <iframe id="video-engine" src="" allow="autoplay; fullscreen" allowfullscreen 
-                    style="width: 100%; height: 100%; border: none;"></iframe>
-        </div>
-        <div class="content-area">
-            <div class="stats-badge">طاقة السعادة: <span id="progress-bar">0</span>%</div>
-            <div id="dynamic-msg"></div>
-            <button class="retry-button" onclick="refreshExperience()">إعادة يا غدوش 🔄</button>
-            <div onclick="backHome()" style="margin-top: 25px; color: #444; cursor: pointer; font-size: 14px;">إغلاق التجربة</div>
+    <div id="video-bg-container">
+        <iframe id="cinema-engine" src="" frameborder="0" allow="autoplay; fullscreen"></iframe>
+    </div>
+
+    <div class="overlay-content" id="ui-layer" style="display: none;">
+        <div></div> <h1 id="dynamic-quote"></h1>
+
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            <div class="retry-circle" onclick="nextWave()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                <span>إعادة</span>
+            </div>
+            <p style="color: rgba(255,255,255,0.5); font-size: 12px; letter-spacing: 2px;">LVL: <span id="lvl-text">1</span></p>
         </div>
     </div>
 
     <script>
-        // نظام الجزيئات الخلفية
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        let dots = [];
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            for(let i=0; i<80; i++) dots.push({
-                x: Math.random()*canvas.width, y: Math.random()*canvas.height,
-                vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5, size: Math.random()*2
-            });
-        }
-        function animate() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(255, 77, 109, 0.3)";
-            dots.forEach(d => {
-                d.x += d.vx; d.y += d.vy;
-                if(d.x<0 || d.x>canvas.width) d.vx *= -1;
-                if(d.y<0 || d.y>canvas.height) d.vy *= -1;
-                ctx.beginPath(); ctx.arc(d.x, d.y, d.size, 0, Math.PI*2); ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-        initCanvas(); animate();
-
-        // منطق العرض
+        let waveCount = 0;
         let vIndex = 0;
-        let power = 0;
-        const vids = ["https://streamable.com/e/2u533q?autoplay=1", "https://streamable.com/e/70ymh0?autoplay=1"];
+        const vids = ["2u533q", "70ymh0"]; // أكواد الفيديو فقط للسرعة
         const quotes = [
-            "أنتِ أيقونة الجمال يا غدوش 👑",
-            "غدوش.. سحر لا ينتهي ✨",
-            "ابتسامتكِ هي الوقود لهذا الموقع 💖",
-            "نادرة، غالية، ومختلفة دائماً 💎",
-            "العالم يبدو أفضل بوجودكِ 🦋"
+            "أنتِ الأجمل في هذا الكون يا غدوش 🌌",
+            "سحر عينيكِ يغلب كل الفيديوهات 💖",
+            "غدوش.. الملكة التي لا تُقهر 👑",
+            "طاقة جمالكِ وصلت للمستوى الأقصى ⚡",
+            "كل ثانية معكِ هي حياة كاملة ✨"
         ];
-        const fonts = ["'Lalezar'", "'Cairo'", "'Reem Kufi'", "'Tajawal'"];
+        const fonts = ["'Lalezar'", "'Cairo'", "'Tajawal'"];
 
-        function launch() {
-            document.getElementById('display-screen').classList.add('screen-active');
-            refreshExperience();
+        function initExperience() {
+            document.getElementById('welcome-screen').style.transform = "translateY(-100%)";
+            document.getElementById('ui-layer').style.display = 'flex';
+            nextWave();
         }
 
-        function refreshExperience() {
-            power = Math.min(power + 25, 100);
-            document.getElementById('progress-bar').innerText = power;
+        function nextWave() {
+            waveCount++;
+            
+            // تحديث العداد العلوي
+            const bar = document.getElementById('progress-line');
+            bar.style.width = (waveCount * 20) % 105 + "%";
+            document.getElementById('lvl-text').innerText = waveCount;
 
-            // تغيير الفيديو
-            document.getElementById('video-engine').src = vids[vIndex];
+            // تحديث الفيديو كخلفية
+            const engine = document.getElementById('cinema-engine');
+            engine.src = `https://streamable.com/e/${vids[vIndex]}?autoplay=1&nocontrols=1&loop=1`;
             vIndex = (vIndex + 1) % vids.length;
 
-            // تغيير الجملة بخط احترافي
-            const msg = document.getElementById('dynamic-msg');
-            msg.innerText = quotes[Math.floor(Math.random() * quotes.length)];
-            msg.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-            msg.style.color = `hsl(${Math.random()*20 + 340}, 100%, 75%)`;
+            // تحديث النص بتأثير انيميشن
+            const text = document.getElementById('dynamic-quote');
+            text.style.opacity = 0;
+            text.style.transform = "translateY(20px)";
             
-            createExplosion();
+            setTimeout(() => {
+                text.innerText = quotes[Math.floor(Math.random() * quotes.length)];
+                text.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+                text.style.fontSize = (Math.random() * 10 + 35) + "px";
+                text.style.opacity = 1;
+                text.style.transform = "translateY(0)";
+            }, 500);
+
+            // انفجار القلوب
+            for(let i=0; i<20; i++) spawnHeart();
         }
 
-        function createExplosion() {
-            for(let i=0; i<40; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.innerHTML = ['❤️','💖','✨','🌸'][Math.floor(Math.random()*4)];
-                p.style.left = '50%'; p.style.top = '70%';
-                p.style.setProperty('--x', (Math.random()-0.5)*400 + 'px');
-                p.style.setProperty('--y', (Math.random()-0.5)*400 + 'px');
-                p.style.fontSize = Math.random()*20 + 20 + 'px';
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), 3000);
-            }
+        function spawnHeart() {
+            const h = document.createElement('div');
+            h.className = 'heart-pop';
+            h.innerHTML = ['❤️','✨','💖'][Math.floor(Math.random()*3)];
+            h.style.left = "50%"; h.style.top = "80%";
+            h.style.setProperty('--tx', (Math.random()-0.5)*600 + "px");
+            h.style.setProperty('--ty', (Math.random()-0.5)*600 - 200 + "px");
+            h.style.fontSize = Math.random()*30 + 20 + "px";
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 1000);
         }
-
-        function backHome() {
-            document.getElementById('display-screen').classList.remove('screen-active');
-            document.getElementById('video-engine').src = "";
-        }
-
-        window.onresize = initCanvas;
     </script>
 </body>
 </html>
