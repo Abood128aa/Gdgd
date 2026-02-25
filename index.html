@@ -8,8 +8,8 @@
     <style>
         :root {
             --neon: #ff0055;
-            --neon-bg: rgba(255, 0, 85, 0.2);
-            --glass: rgba(0, 0, 0, 0.7);
+            --neon-glow: rgba(255, 0, 85, 0.6);
+            --card-bg: rgba(20, 20, 20, 0.85);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,84 +18,102 @@
             height: 100%; width: 100%; 
             font-family: 'Tajawal', sans-serif; 
             background: #000; overflow: hidden;
+            color: white;
         }
 
-        /* حاوية الفيديو العملاقة - ملء الشاشة */
+        /* حاوية الفيديو العملاقة - خلفية حية */
         #video-bg-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
+            z-index: 1; pointer-events: none; opacity: 0.6;
         }
         #video-bg-container iframe {
             width: 100vw; height: 100vh;
-            transform: scale(1.5); /* لإخفاء حواف المشغل */
+            transform: scale(1.6);
             pointer-events: none;
         }
 
-        /* واجهة التحكم العلوية */
+        /* شريط التقدم النيوني العلوي */
         .top-bar {
-            position: fixed; top: 0; left: 0; width: 100%; height: 6px;
-            background: rgba(255,255,255,0.1); z-index: 1000;
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+            width: 90%; height: 12px; background: rgba(255,255,255,0.05);
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000; overflow: hidden; padding: 2px;
         }
         #progress-line {
             height: 100%; width: 0%; background: var(--neon);
-            box-shadow: 0 0 15px var(--neon); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px; box-shadow: 0 0 15px var(--neon);
+            transition: width 0.6s ease;
         }
 
-        /* الطبقة الشفافة فوق الفيديو */
+        /* واجهة المستخدم المركزية */
         .overlay-content {
             position: relative; z-index: 100; height: 100vh;
-            display: flex; flex-direction: column; justify-content: space-between;
-            align-items: center; padding: 40px 20px;
-            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.8));
-            transition: opacity 1s;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; padding: 20px;
+            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.4) 100%);
         }
 
-        /* نص الجملة الاحترافي */
-        #dynamic-quote {
-            text-align: center; color: white; font-weight: 900;
-            text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 0 40px var(--neon);
-            max-width: 90%; line-height: 1.4;
-            opacity: 0; transform: translateY(20px);
-            transition: all 0.6s ease;
-        }
-
-        /* زر الإعادة المصغر والاحترافي */
-        .retry-circle {
-            width: 70px; height: 70px;
-            background: var(--glass);
+        /* البطاقة النيونية الكبيرة */
+        .neon-card {
+            background: var(--card-bg);
             border: 2px solid var(--neon);
-            border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 20px var(--neon-bg);
-            margin-bottom: 20px;
+            box-shadow: 0 0 30px var(--neon-glow);
+            border-radius: 30px;
+            padding: 35px 25px;
+            width: 95%; max-width: 450px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
         }
-        .retry-circle:hover { transform: scale(1.1) rotate(180deg); background: var(--neon); }
-        .retry-circle span { font-size: 10px; color: white; font-weight: bold; margin-top: 2px; }
 
-        /* الشاشة الافتتاحية */
+        #dynamic-quote {
+            font-size: 1.8rem; font-weight: 900; line-height: 1.5;
+            min-height: 80px; margin-bottom: 20px;
+            transition: all 0.5s ease;
+        }
+
+        /* الأزرار النيونية الكبيرة */
+        .btn-neon {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--neon);
+            padding: 18px 45px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-family: 'Lalezar';
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 15px var(--neon-glow);
+            width: 100%;
+            margin-bottom: 15px;
+            display: block;
+            text-decoration: none;
+        }
+        .btn-neon:hover {
+            background: var(--neon);
+            box-shadow: 0 0 40px var(--neon);
+            transform: scale(1.05);
+        }
+
+        .lvl-badge {
+            font-size: 14px; color: #aaa; letter-spacing: 3px; margin-top: 10px;
+        }
+
+        /* شاشة الترحيب */
         #welcome-screen {
             position: fixed; inset: 0; z-index: 2000;
-            background: radial-gradient(circle at center, #111, #000);
+            background: #000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: transform 1s cubic-bezier(1, 0, 0, 1);
+            transition: transform 0.8s cubic-bezier(1, 0, 0, 1);
         }
-        .main-btn {
-            background: transparent; color: white; border: 2px solid var(--neon);
-            padding: 20px 50px; border-radius: 50px; font-size: 24px; font-family: 'Lalezar';
-            cursor: pointer; box-shadow: 0 0 30px var(--neon-bg);
-            transition: 0.3s;
-        }
-        .main-btn:hover { background: var(--neon); transform: scale(1.05); }
 
-        /* قلوب وانفجارات */
         .heart-pop {
-            position: absolute; pointer-events: none;
+            position: absolute; pointer-events: none; z-index: 500;
             animation: popOut 1s ease-out forwards;
         }
         @keyframes popOut {
-            0% { transform: scale(0) translate(0,0); opacity: 1; }
-            100% { transform: scale(1.5) translate(var(--tx), var(--ty)); opacity: 0; }
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
         }
     </style>
 </head>
@@ -104,8 +122,8 @@
     <div class="top-bar"><div id="progress-line"></div></div>
 
     <div id="welcome-screen">
-        <div style="font-size: 80px; margin-bottom: 20px;">🌹</div>
-        <button class="main-btn" onclick="initExperience()">عالم غدوش الخرافي ✨</button>
+        <div style="font-size: 100px; margin-bottom: 30px; filter: drop-shadow(0 0 20px var(--neon));">👑</div>
+        <button class="btn-neon" style="width: auto;" onclick="initExperience()">دخول عالم غدوش 🚀</button>
     </div>
 
     <div id="video-bg-container">
@@ -113,27 +131,34 @@
     </div>
 
     <div class="overlay-content" id="ui-layer" style="display: none;">
-        <div></div> <h1 id="dynamic-quote"></h1>
-
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <div class="retry-circle" onclick="nextWave()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-                <span>إعادة</span>
-            </div>
-            <p style="color: rgba(255,255,255,0.5); font-size: 12px; letter-spacing: 2px;">LVL: <span id="lvl-text">1</span></p>
+        
+        <div class="neon-card">
+            <div id="dynamic-quote">جاهزة للمفاجأة يا غدوش؟</div>
+            
+            <button class="btn-neon" onclick="nextWave()">إعادة يا غدوش 🔄</button>
+            
+            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn-neon" style="font-size: 1.1rem; padding: 12px; border-color: #555; box-shadow: none;">
+                👤 الحساب الشخصي
+            </a>
+            
+            <div class="lvl-badge">LEVEL: <span id="lvl-text" style="color:var(--neon)">1</span></div>
         </div>
+
+        <p onclick="location.reload()" style="color:#444; cursor:pointer;">خروج نهائي</p>
     </div>
 
     <script>
         let waveCount = 0;
         let vIndex = 0;
-        const vids = ["2u533q", "70ymh0"]; // أكواد الفيديو فقط للسرعة
+        const vids = ["2u533q", "70ymh0"]; 
         const quotes = [
             "أنتِ الأجمل في هذا الكون يا غدوش 🌌",
             "سحر عينيكِ يغلب كل الفيديوهات 💖",
             "غدوش.. الملكة التي لا تُقهر 👑",
             "طاقة جمالكِ وصلت للمستوى الأقصى ⚡",
-            "كل ثانية معكِ هي حياة كاملة ✨"
+            "كل ثانية معكِ هي حياة كاملة ✨",
+            "جمالكِ يا غدوش يزداد مع كل ضغطة 😍",
+            "أنتِ نادرة جداً ومميزة 💎"
         ];
         const fonts = ["'Lalezar'", "'Cairo'", "'Tajawal'"];
 
@@ -146,40 +171,38 @@
         function nextWave() {
             waveCount++;
             
-            // تحديث العداد العلوي
+            // تحديث العداد
             const bar = document.getElementById('progress-line');
-            bar.style.width = (waveCount * 20) % 105 + "%";
+            bar.style.width = Math.min(waveCount * 10, 100) + "%";
             document.getElementById('lvl-text').innerText = waveCount;
 
-            // تحديث الفيديو كخلفية
+            // تحديث الفيديو
             const engine = document.getElementById('cinema-engine');
-            engine.src = `https://streamable.com/e/${vids[vIndex]}?autoplay=1&nocontrols=1&loop=1`;
+            engine.src = `https://streamable.com/e/${vids[vIndex]}?autoplay=1&nocontrols=1`;
             vIndex = (vIndex + 1) % vids.length;
 
-            // تحديث النص بتأثير انيميشن
+            // تحديث النص والخط
             const text = document.getElementById('dynamic-quote');
             text.style.opacity = 0;
-            text.style.transform = "translateY(20px)";
             
             setTimeout(() => {
                 text.innerText = quotes[Math.floor(Math.random() * quotes.length)];
                 text.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-                text.style.fontSize = (Math.random() * 10 + 35) + "px";
+                text.style.color = `hsl(${Math.random()*20 + 340}, 100%, 80%)`;
                 text.style.opacity = 1;
-                text.style.transform = "translateY(0)";
-            }, 500);
+            }, 300);
 
             // انفجار القلوب
-            for(let i=0; i<20; i++) spawnHeart();
+            for(let i=0; i<25; i++) spawnHeart();
         }
 
         function spawnHeart() {
             const h = document.createElement('div');
             h.className = 'heart-pop';
-            h.innerHTML = ['❤️','✨','💖'][Math.floor(Math.random()*3)];
-            h.style.left = "50%"; h.style.top = "80%";
-            h.style.setProperty('--tx', (Math.random()-0.5)*600 + "px");
-            h.style.setProperty('--ty', (Math.random()-0.5)*600 - 200 + "px");
+            h.innerHTML = ['❤️','💖','✨','🔥'][Math.floor(Math.random()*4)];
+            h.style.left = "50%"; h.style.top = "50%";
+            h.style.setProperty('--tx', (Math.random()-0.5)*800 + "px");
+            h.style.setProperty('--ty', (Math.random()-0.5)*800 + "px");
             h.style.fontSize = Math.random()*30 + 20 + "px";
             document.body.appendChild(h);
             setTimeout(() => h.remove(), 1000);
