@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مفاجأة خاصة ✨</title>
+    <title>مفاجأة متجددة ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --main-color: #ff4d6d;
             --fb-color: #1877f2;
-            --bg-gradient: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
         }
 
         body {
@@ -17,179 +16,174 @@
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
             font-family: 'Tajawal', sans-serif;
-            background: var(--bg-gradient);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: #ffe5ec;
+            transition: background 1s ease; /* لتغيير لون الخلفية بنعومة */
             overflow: hidden;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container {
+        .card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+            padding: 40px 20px;
+            border-radius: 35px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.25);
-            padding: 40px 25px;
-            border-radius: 40px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.1);
-            max-width: 380px; width: 85%;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            animation: fadeIn 1s ease-out;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.1);
+            width: 85%; max-width: 360px;
+            border: 1px solid rgba(255,255,255,0.5);
             z-index: 10;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .main-img {
+            width: 100%; border-radius: 25px;
+            cursor: zoom-in; transition: 0.4s;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        .img-wrapper {
-            cursor: zoom-in;
-            margin-bottom: 35px;
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }
+        .main-img:hover { transform: scale(1.03) rotate(1deg); }
 
-        .profile-img {
-            width: 180px; height: 180px;
-            border-radius: 30px;
-            border: 5px solid white;
-            object-fit: cover;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        .img-wrapper:hover { transform: scale(1.03); }
-
-        .buttons-container { display: flex; flex-direction: column; gap: 18px; }
+        .btn-group { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
 
         .btn {
-            text-decoration: none; padding: 16px;
-            border-radius: 20px; font-weight: bold;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer; border: none; font-size: 16px;
+            padding: 16px; border-radius: 18px; border: none;
+            font-weight: bold; cursor: pointer; text-decoration: none;
+            font-size: 16px; transition: 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        .btn-profile { background: var(--fb-color); color: white; box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3); }
-        .btn-surprise { background: var(--main-color); color: white; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); animation: pulse 2s infinite; }
+        .btn-fb { background: var(--fb-color); color: white; }
+        .btn-vid { background: var(--main-color); color: white; animation: pulse 2s infinite; }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
-            50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(255, 77, 109, 0.5); }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        /* نافذة المفاجأة */
+        #vid-overlay {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.96); z-index: 999;
+            justify-content: center; align-items: center; flex-direction: column;
+            text-align: center; color: white;
         }
 
-        /* نافذة المفاجأة (فيديو) */
-        #surprise-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); justify-content: center; align-items: center;
-            z-index: 1000; flex-direction: column;
+        .vid-wrapper { 
+            width: 85%; max-width: 320px; 
+            border-radius: 20px; overflow: hidden; 
+            background: #000; margin-bottom: 20px;
+            box-shadow: 0 0 30px var(--main-color);
         }
 
-        .video-box {
-            width: 95%; max-width: 500px;
-            border-radius: 15px; overflow: hidden;
-            box-shadow: 0 0 40px var(--main-color);
-            background: black;
+        #message-box {
+            font-size: 1.4rem; font-weight: bold;
+            margin: 15px 20px; line-height: 1.5;
+            min-height: 3em;
         }
 
-        .video-box iframe { width: 100%; aspect-ratio: 9/16; border: none; }
-
-        .close-btn {
-            margin-top: 25px; padding: 12px 35px;
-            background: var(--main-color); color: white;
-            border-radius: 50px; cursor: pointer; font-weight: bold;
-            border: none; transition: 0.3s;
+        .close-btn { 
+            background: white; color: black; border: none; 
+            padding: 12px 30px; border-radius: 25px; 
+            cursor: pointer; font-weight: bold;
         }
 
-        /* نافذة تكبير الصورة */
-        #image-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); justify-content: center; align-items: center;
-            z-index: 2000; cursor: zoom-out;
+        /* مؤثرات */
+        .heart { position: absolute; font-size: 20px; animation: fall linear forwards; z-index: 5; }
+        @keyframes fall { 
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
 
-        #image-overlay img { max-width: 90%; max-height: 85%; border-radius: 15px; animation: zoomIn 0.3s; }
-
-        @keyframes zoomIn { from { transform: scale(0.8); } to { transform: scale(1); } }
-
-        .heart { position: absolute; font-size: 25px; pointer-events: none; animation: fall linear forwards; }
-
-        @keyframes fall {
-            from { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        #img-overlay {
+            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="img-wrapper" onclick="openLightbox()">
-            <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" alt="Profile" class="profile-img">
-        </div>
-        
-        <div class="buttons-container">
-            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-profile">
-                👤 زيارة الحساب الشخصي
-            </a>
-            <button onclick="showSurprise()" class="btn btn-surprise">
-                🎁 افتحي المفاجأة
-            </button>
+    <div class="card">
+        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="main-img" onclick="openImg()">
+        <div class="btn-group">
+            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-fb">👤 بروفايل فيسبوك</a>
+            <button class="btn btn-vid" onclick="openSurprise()">🎁 افتحي المفاجأة</button>
         </div>
     </div>
 
-    <div id="surprise-overlay">
-        <div class="video-box">
-            <iframe id="video-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <div id="vid-overlay">
+        <div class="vid-wrapper">
+            <iframe id="player" width="100%" height="500px" src="" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
         </div>
+        <div id="message-box"></div>
         <button class="close-btn" onclick="closeSurprise()">إغلاق ✖</button>
     </div>
 
-    <div id="image-overlay" onclick="closeLightbox()">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" alt="Zoomed">
+    <div id="img-overlay" onclick="closeImg()">
+        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" style="max-width: 90%; border-radius: 15px;">
     </div>
 
     <script>
-        function openLightbox() {
-            document.getElementById('image-overlay').style.display = 'flex';
-        }
+        const sentences = [
+            "أنتِ كالفراشة التي تملأ المكان بهجة 🦋",
+            "وجودكِ يجعل العالم مكاناً أجمل ✨",
+            "ابتسامتكِ هي سر الجمال في هذا الكون 🌸",
+            "دائماً مميزة وفريدة بطريقتكِ الخاصة 💖",
+            "أتمنى لكِ يوماً مليئاً بكل ما تحبين 🌹",
+            "أنتِ النور الذي يضيء العتمة دائماً 🌟",
+            "جمالكِ يزداد في كل مرة تضحكين فيها 😍",
+            "فخورة بكِ وبكل إنجازاتكِ الرائعة 🏆",
+            "أنتِ طاقة إيجابية تمشي على الأرض ⚡",
+            "لا يوجد أحد في العالم يشبهكِ أبداً 💎",
+            "أنتِ لستِ فقط جميلة، بل روحكِ أجمل 🕊️",
+            "عسى أيامكِ كلها غيم ومطر وسعادة ☁️",
+            "تستحقين كل الأشياء اللطيفة في الحياة 🎀",
+            "أنتِ الحكاية التي لا أريد أن تنتهي 📖",
+            "كل عام وأنتِ بطلة قصتكِ الخاصة 👑",
+            "عيناكِ تحكيان قصصاً من الجمال الخالص 👀",
+            "أنتِ نادرة جداً، وهذا سر جاذبيتكِ 💫",
+            "دمتِ بخير، ودمتِ لنا شيئاً لا يتكرر ❤️",
+            "كوني كما أنتِ، لأنكِ مذهلة بكل حالاتكِ 🔥",
+            "أرسل لكِ الكثير من الحب والتقدير اليوم 💌"
+        ];
 
-        function closeLightbox() {
-            document.getElementById('image-overlay').style.display = 'none';
-        }
+        const bgColors = ["#ffe5ec", "#e0f2fe", "#f3e8ff", "#ecfdf5", "#fff7ed", "#fef2f2"];
+        const emojis = ['❤️', '✨', '🌸', '💖', '🦋', '🌟', '❄️'];
 
-        function showSurprise() {
-            const overlay = document.getElementById('surprise-overlay');
-            const video = document.getElementById('video-frame');
-            // رابط الفيديو المدمج
-            video.src = "https://streamable.com/e/2u533q?autoplay=1"; 
-            overlay.style.display = 'flex';
-            createHearts();
+        function openSurprise() {
+            // 1. اختيار جملة عشوائية
+            const randomSentence = sentences[Math.floor(Math.random() * sentences.length)];
+            document.getElementById('message-box').innerText = randomSentence;
+
+            // 2. تغيير لون خلفية الصفحة بشكل عشوائي
+            document.body.style.background = bgColors[Math.floor(Math.random() * bgColors.length)];
+
+            // 3. تشغيل الفيديو
+            document.getElementById('player').src = "https://streamable.com/e/2u533q?autoplay=1";
+            document.getElementById('vid-overlay').style.display = 'flex';
+
+            // 4. إطلاق المؤثرات (القلوب أو الرموز)
+            dropHearts();
         }
 
         function closeSurprise() {
-            const overlay = document.getElementById('surprise-overlay');
-            const video = document.getElementById('video-frame');
-            video.src = ""; // إيقاف الفيديو
-            overlay.style.display = 'none';
+            document.getElementById('player').src = "";
+            document.getElementById('vid-overlay').style.display = 'none';
         }
 
-        function createHearts() {
-            const emojis = ['❤️', '✨', '💖', '🌸'];
-            for(let i=0; i<35; i++) {
+        function openImg() { document.getElementById('img-overlay').style.display = 'flex'; }
+        function closeImg() { document.getElementById('img-overlay').style.display = 'none'; }
+
+        function dropHearts() {
+            // اختيار رمز عشوائي لهذا العرض
+            const selectedEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            for(let i=0; i<40; i++){
                 setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.classList.add('heart');
-                    heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-                    heart.style.left = Math.random() * 100 + 'vw';
-                    heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-                    document.body.appendChild(heart);
-                    setTimeout(() => heart.remove(), 5000);
-                }, i * 150);
+                    const h = document.createElement('div');
+                    h.className = 'heart';
+                    h.innerHTML = selectedEmoji;
+                    h.style.left = Math.random() * 100 + 'vw';
+                    h.style.top = "-5vh";
+                    h.style.fontSize = (Math.random() * 15 + 15) + "px";
+                    h.style.animationDuration = (Math.random()*2 + 3) + 's';
+                    document.body.appendChild(h);
+                    setTimeout(() => h.remove(), 5000);
+                }, i * 120);
             }
         }
     </script>
