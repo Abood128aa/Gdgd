@@ -3,195 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مفاجأة لغادة ✨</title>
+    <title>مفاجأة غادة الكبرى ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --main-color: #ff4d6d;
-            --fb-color: #1877f2;
+            --primary: #ff4d6d;
+            --secondary: #ff758f;
         }
 
-        body {
-            margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh;
+        * { box-sizing: border-box; }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
             font-family: 'Tajawal', sans-serif;
-            background: #ffe5ec;
-            transition: background 0.8s ease;
-            overflow: hidden;
+            background: #000; overflow: hidden;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(15px);
-            padding: 40px 20px;
-            border-radius: 35px;
-            text-align: center;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.1);
-            width: 85%; max-width: 360px;
-            border: 1px solid rgba(255,255,255,0.5);
-            z-index: 10;
+        /* الشاشة الرئيسية */
+        .hero-section {
+            position: relative; height: 100vh; width: 100%;
+            display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg');
+            background-size: cover; background-position: center;
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
         }
 
-        .main-img {
-            width: 100%; border-radius: 25px;
-            cursor: zoom-in; transition: 0.4s;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        .main-content { text-align: center; color: white; z-index: 10; }
+
+        /* القلب النابض */
+        .beating-heart {
+            font-size: 80px;
+            color: var(--primary);
+            cursor: pointer;
+            filter: drop-shadow(0 0 20px var(--primary));
+            animation: beat 1.2s infinite;
+            margin-bottom: 20px;
+            display: inline-block;
         }
 
-        .btn-group { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
-
-        .btn {
-            padding: 16px; border-radius: 18px; border: none;
-            font-weight: bold; cursor: pointer; text-decoration: none;
-            font-size: 16px; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+        @keyframes beat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.25); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.15); }
+            60% { transform: scale(1); }
         }
 
-        .btn-fb { background: var(--fb-color); color: white; }
-        .btn-vid { background: var(--main-color); color: white; animation: pulse 2s infinite; }
-
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-
-        /* نافذة المفاجأة */
-        #vid-overlay {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.96); z-index: 999;
-            justify-content: center; align-items: center; flex-direction: column;
-            text-align: center; color: white;
+        .btn-main {
+            background: var(--primary); color: white; border: none;
+            padding: 15px 40px; border-radius: 50px; font-size: 20px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
         }
 
-        .vid-wrapper { 
-            width: 85%; max-width: 320px; 
-            border-radius: 20px; overflow: hidden; 
-            background: #000; margin-bottom: 10px;
-            box-shadow: 0 0 30px var(--main-color);
+        .btn-main:hover { transform: scale(1.1); background: #fff; color: var(--primary); }
+
+        /* شاشة المفاجأة كاملة */
+        #surprise-screen {
+            position: fixed; top: 100%; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: top 0.8s cubic-bezier(0.85, 0, 0.15, 1);
         }
 
-        #message-box {
-            font-size: 1.3rem; font-weight: bold;
-            margin: 10px 20px; line-height: 1.4;
-            min-height: 2.5em; color: #ffbcc9;
+        #surprise-screen.active { top: 0; }
+
+        .video-container {
+            width: 100%; height: 70vh;
+            background: #000; position: relative;
         }
 
-        .close-btn { 
-            background: var(--main-color); color: white; border: none; 
-            padding: 14px 40px; border-radius: 30px; 
-            cursor: pointer; font-weight: bold; font-size: 18px;
-            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+        iframe { width: 100%; height: 100%; border: none; }
+
+        .info-panel {
+            padding: 20px; text-align: center; color: white;
+            background: linear-gradient(to top, #000, transparent);
+            width: 100%;
         }
 
-        .heart { position: absolute; font-size: 20px; animation: fall linear forwards; z-index: 5; }
-        @keyframes fall { 
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        /* العداد الاحترافي */
+        .counter-box {
+            font-size: 14px; color: #ffbcc9; margin-top: 10px;
+            text-transform: uppercase; letter-spacing: 2px;
         }
 
-        #img-overlay {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
+        #count-number { font-weight: bold; color: white; font-size: 18px; }
+
+        .msg-text { font-size: 1.5rem; margin: 15px 0; font-weight: bold; height: 60px; }
+
+        .action-btns { display: flex; gap: 10px; margin-top: 10px; }
+
+        .btn-retry {
+            background: #fff; color: #000; padding: 12px 30px;
+            border-radius: 30px; font-weight: bold; cursor: pointer; border: none;
+        }
+
+        .btn-close {
+            background: rgba(255,255,255,0.1); color: #fff; padding: 12px 20px;
+            border-radius: 30px; cursor: pointer; border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* مؤثرات تساقط */
+        .floating-emoji {
+            position: absolute; pointer-events: none; z-index: 200;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="main-img" onclick="openImg()">
-        <div class="btn-group">
-            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-fb">👤 بروفايل فيسبوك</a>
-            <button class="btn btn-vid" onclick="openSurprise()">🎁 افتحي المفاجأة يا غادة</button>
+    <section class="hero-section" id="hero">
+        <div class="main-content">
+            <div class="beating-heart" onclick="openSurprise()">❤️</div>
+            <h1 style="font-size: 32px; margin-bottom: 30px;">لأجلكِ غادة..</h1>
+            <button class="btn-main" onclick="openSurprise()">اضغطي للمفاجأة 🎁</button>
+            <br><br>
+            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" style="color: #aaa; text-decoration: none; font-size: 14px;">زيارة البروفايل 👤</a>
         </div>
-    </div>
+    </section>
 
-    <div id="vid-overlay">
-        <div class="vid-wrapper">
-            <iframe id="player" width="100%" height="500px" src="" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <div id="surprise-screen">
+        <div class="video-container">
+            <iframe id="main-player" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         </div>
-        <div id="message-box"></div>
-        <button class="close-btn" onclick="openSurprise()">إعادة يا غادة 🔄</button>
-        <p onclick="closeSurprise()" style="margin-top:15px; cursor:pointer; font-size:12px; color:#888;">إغلاق نهائي</p>
-    </div>
+        
+        <div class="info-panel">
+            <div class="msg-text" id="msg-display"></div>
+            
+            <div class="counter-box">
+                مستوى السعادة: <span id="count-number">0</span>%
+            </div>
 
-    <div id="img-overlay" onclick="closeImg()">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" style="max-width: 90%; border-radius: 15px;">
+            <div class="action-btns">
+                <button class="btn-retry" onclick="switchContent()">إعادة يا غادة 🔄</button>
+                <button class="btn-close" onclick="closeSurprise()">خروج ✖</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        const sentences = [
-            "أنتِ كالفراشة التي تملأ المكان بهجة يا غادة 🦋",
-            "وجودكِ يجعل العالم مكاناً أجمل ✨",
-            "ابتسامتكِ هي سر الجمال في هذا الكون يا غادة 🌸",
-            "دائماً مميزة وفريدة بطريقتكِ الخاصة 💖",
-            "أتمنى لكِ يوماً مليئاً بكل ما تحبين 🌹",
-            "أنتِ النور الذي يضيء العتمة دائماً 🌟",
-            "جمالكِ يزداد في كل مرة تضحكين فيها يا غادة 😍",
-            "فخورة بكِ وبكل إنجازاتكِ الرائعة 🏆",
-            "أنتِ طاقة إيجابية تمشي على الأرض ⚡",
-            "لا يوجد أحد في العالم يشبهكِ أبداً يا غادة 💎",
-            "أنتِ لستِ فقط جميلة، بل روحكِ أجمل 🕊️",
-            "عسى أيامكِ كلها غيم ومطر وسعادة ☁️",
-            "تستحقين كل الأشياء اللطيفة في الحياة يا غادة 🎀",
-            "أنتِ الحكاية التي لا أريد أن تنتهي 📖",
-            "كل عام وأنتِ بطلة قصتكِ الخاصة يا غادة 👑",
-            "عيناكِ تحكيان قصصاً من الجمال الخالص 👀",
-            "أنتِ نادرة جداً، وهذا سر جاذبيتكِ يا غادة 💫",
-            "دمتِ بخير، ودمتِ لنا شيئاً لا يتكرر ❤️",
-            "كوني كما أنتِ، لأنكِ مذهلة بكل حالاتكِ 🔥",
-            "أرسل لكِ الكثير من الحب والتقدير اليوم يا غادة 💌"
-        ];
-
-        // مصفوفة الفيديوهات
-        const videoLinks = [
+        let count = 0;
+        let currentVid = 0;
+        const videos = [
             "https://streamable.com/e/2u533q?autoplay=1",
             "https://streamable.com/e/70ymh0?autoplay=1"
         ];
-
-        const bgColors = ["#ffe5ec", "#e0f2fe", "#f3e8ff", "#ecfdf5", "#fff7ed", "#fef2f2"];
-        const emojis = ['❤️', '✨', '🌸', '💖', '🦋', '🌟'];
         
-        let currentVideoIndex = 0;
+        const quotes = [
+            "أنتِ النجمة التي تضيء سمائي يا غادة ✨",
+            "ابتسامتكِ تساوي الكثير دائماً 💖",
+            "غادة.. أنتِ الشخص الأكثر تميزاً 🌸",
+            "في كل إعادة، يزداد جمالكِ في عيني 💎",
+            "أنتِ كالفراشة الرقيقة يا غادة 🦋",
+            "يومكِ سعيد كروحكِ الجميلة 🌹"
+        ];
 
         function openSurprise() {
-            // 1. اختيار جملة عشوائية
-            const randomSentence = sentences[Math.floor(Math.random() * sentences.length)];
-            document.getElementById('message-box').innerText = randomSentence;
-
-            // 2. تغيير لون الخلفية
-            document.body.style.background = bgColors[Math.floor(Math.random() * bgColors.length)];
-
-            // 3. التبديل بين الفيديوهات (0 ثم 1 ثم 0...)
-            const player = document.getElementById('player');
-            player.src = videoLinks[currentVideoIndex];
-            currentVideoIndex = (currentVideoIndex + 1) % videoLinks.length;
-
-            // 4. إظهار النافذة
-            document.getElementById('vid-overlay').style.display = 'flex';
-
-            // 5. مؤثرات
-            dropHearts();
+            document.getElementById('hero').style.transform = "scale(0.8) translateY(-100vh)";
+            document.getElementById('surprise-screen').classList.add('active');
+            switchContent();
         }
 
         function closeSurprise() {
-            document.getElementById('player').src = "";
-            document.getElementById('vid-overlay').style.display = 'none';
+            document.getElementById('hero').style.transform = "scale(1) translateY(0)";
+            document.getElementById('surprise-screen').classList.remove('active');
+            document.getElementById('main-player').src = "";
         }
 
-        function openImg() { document.getElementById('img-overlay').style.display = 'flex'; }
-        function closeImg() { document.getElementById('img-overlay').style.display = 'none'; }
+        function switchContent() {
+            // العداد
+            count += 20;
+            if(count > 100) count = 100;
+            document.getElementById('count-number').innerText = count;
 
-        function dropHearts() {
-            const selectedEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-            for(let i=0; i<30; i++){
-                setTimeout(() => {
-                    const h = document.createElement('div');
-                    h.className = 'heart';
-                    h.innerHTML = selectedEmoji;
-                    h.style.left = Math.random() * 100 + 'vw';
-                    h.style.top = "-5vh";
-                    h.style.animationDuration = (Math.random()*2 + 2) + 's';
-                    document.body.appendChild(h);
-                    setTimeout(() => h.remove(), 4000);
-                }, i * 150);
+            // تبديل الفيديو
+            const player = document.getElementById('main-player');
+            player.src = videos[currentVid];
+            currentVid = (currentVid + 1) % videos.length;
+
+            // تبديل الجملة
+            const msg = document.getElementById('msg-display');
+            msg.innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+            // مؤثرات الانفجار اللطيف
+            burstHearts();
+        }
+
+        function burstHearts() {
+            for(let i=0; i<30; i++) {
+                const e = document.createElement('div');
+                e.className = 'floating-emoji';
+                e.innerHTML = ['❤️', '✨', '💖', '🌸'][Math.floor(Math.random()*4)];
+                e.style.left = Math.random() * 100 + "vw";
+                e.style.top = "-5vh";
+                e.style.fontSize = (Math.random() * 20 + 20) + "px";
+                e.style.animationDuration = (Math.random() * 2 + 2) + "s";
+                document.body.appendChild(e);
+                setTimeout(() => e.remove(), 4000);
             }
         }
     </script>
