@@ -31,90 +31,96 @@
 
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 50px 30px;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 40px 25px;
             border-radius: 40px;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             box-shadow: 0 25px 45px rgba(0,0,0,0.1);
             max-width: 380px; width: 85%;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            animation: fadeIn 1.2s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            animation: fadeIn 1s ease-out;
+            z-index: 10;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .img-wrapper {
             cursor: zoom-in;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             display: inline-block;
+            transition: transform 0.3s ease;
         }
 
         .profile-img {
-            width: 190px; height: 190px;
+            width: 180px; height: 180px;
             border-radius: 30px;
-            border: 6px solid rgba(255, 255, 255, 0.8);
+            border: 5px solid white;
             object-fit: cover;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            transition: transform 0.5s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
-        .img-wrapper:hover .profile-img { transform: scale(1.05); }
+        .img-wrapper:hover { transform: scale(1.03); }
 
-        .buttons-container { display: flex; flex-direction: column; gap: 20px; }
+        .buttons-container { display: flex; flex-direction: column; gap: 18px; }
 
         .btn {
-            text-decoration: none; padding: 18px;
+            text-decoration: none; padding: 16px;
             border-radius: 20px; font-weight: bold;
-            transition: all 0.3s ease; cursor: pointer;
-            border: none; font-size: 17px; text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer; border: none; font-size: 16px;
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        .btn-profile { background: var(--fb-color); color: white; }
-        .btn-surprise { background: var(--main-color); color: white; animation: pulse 2s infinite; }
+        .btn-profile { background: var(--fb-color); color: white; box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3); }
+        .btn-surprise { background: var(--main-color); color: white; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); animation: pulse 2s infinite; }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(255, 77, 109, 0.5); }
         }
 
-        /* نافذة المفاجأة (الفيديو) */
+        /* نافذة المفاجأة (فيديو) */
         #surprise-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); justify-content: center; align-items: center;
             z-index: 1000; flex-direction: column;
         }
 
-        .video-container {
-            width: 90%; max-width: 500px;
-            border-radius: 20px; overflow: hidden;
-            box-shadow: 0 0 50px var(--main-color);
+        .video-box {
+            width: 95%; max-width: 500px;
+            border-radius: 15px; overflow: hidden;
+            box-shadow: 0 0 40px var(--main-color);
+            background: black;
         }
 
-        iframe { width: 100%; aspect-ratio: 16/9; border: none; }
+        .video-box iframe { width: 100%; aspect-ratio: 9/16; border: none; }
 
         .close-btn {
-            margin-top: 20px; padding: 10px 30px;
-            background: white; color: black; border-radius: 50px;
-            cursor: pointer; font-weight: bold;
+            margin-top: 25px; padding: 12px 35px;
+            background: var(--main-color); color: white;
+            border-radius: 50px; cursor: pointer; font-weight: bold;
+            border: none; transition: 0.3s;
         }
 
         /* نافذة تكبير الصورة */
         #image-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); justify-content: center; align-items: center;
-            z-index: 2000;
+            z-index: 2000; cursor: zoom-out;
         }
 
-        #image-overlay img { max-width: 90%; max-height: 80%; border-radius: 15px; }
+        #image-overlay img { max-width: 90%; max-height: 85%; border-radius: 15px; animation: zoomIn 0.3s; }
 
-        .heart { position: absolute; font-size: 25px; pointer-events: none; animation: fall linear forwards; z-index: 50; }
+        @keyframes zoomIn { from { transform: scale(0.8); } to { transform: scale(1); } }
+
+        .heart { position: absolute; font-size: 25px; pointer-events: none; animation: fall linear forwards; }
 
         @keyframes fall {
+            from { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
             to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
     </style>
@@ -123,7 +129,7 @@
 
     <div class="container">
         <div class="img-wrapper" onclick="openLightbox()">
-            <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" alt="Profile Image" class="profile-img">
+            <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" alt="Profile" class="profile-img">
         </div>
         
         <div class="buttons-container">
@@ -137,10 +143,10 @@
     </div>
 
     <div id="surprise-overlay">
-        <div class="video-container">
-            <iframe id="video-frame" src="" allow="autoplay"></iframe>
+        <div class="video-box">
+            <iframe id="video-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         </div>
-        <div class="close-btn" onclick="closeSurprise()">إغلاق المفاجأة ✖</div>
+        <button class="close-btn" onclick="closeSurprise()">إغلاق ✖</button>
     </div>
 
     <div id="image-overlay" onclick="closeLightbox()">
@@ -148,13 +154,18 @@
     </div>
 
     <script>
-        function openLightbox() { document.getElementById('image-overlay').style.display = 'flex'; }
-        function closeLightbox() { document.getElementById('image-overlay').style.display = 'none'; }
+        function openLightbox() {
+            document.getElementById('image-overlay').style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            document.getElementById('image-overlay').style.display = 'none';
+        }
 
         function showSurprise() {
             const overlay = document.getElementById('surprise-overlay');
             const video = document.getElementById('video-frame');
-            // الرابط المستخدم هو للدمج (Embed) مع خاصية التشغيل التلقائي
+            // رابط الفيديو المدمج
             video.src = "https://streamable.com/e/2u533q?autoplay=1"; 
             overlay.style.display = 'flex';
             createHearts();
@@ -163,23 +174,22 @@
         function closeSurprise() {
             const overlay = document.getElementById('surprise-overlay');
             const video = document.getElementById('video-frame');
-            video.src = ""; // إيقاف الفيديو عند الإغلاق
+            video.src = ""; // إيقاف الفيديو
             overlay.style.display = 'none';
         }
 
         function createHearts() {
-            const emojis = ['❤️', '✨', '💖'];
-            for(let i=0; i<40; i++) {
+            const emojis = ['❤️', '✨', '💖', '🌸'];
+            for(let i=0; i<35; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.classList.add('heart');
                     heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
                     heart.style.left = Math.random() * 100 + 'vw';
-                    heart.style.top = '-5vh';
-                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
                     document.body.appendChild(heart);
                     setTimeout(() => heart.remove(), 5000);
-                }, i * 100);
+                }, i * 150);
             }
         }
     </script>
