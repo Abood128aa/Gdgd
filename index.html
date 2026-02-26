@@ -35,7 +35,6 @@
             overflow: hidden;
         }
 
-        /* حاوية الصورة مع الورد والنبض */
         .img-wrapper {
             position: relative;
             width: 220px; height: 220px;
@@ -69,7 +68,6 @@
             50% { transform: scale(1.1); }
         }
 
-        /* قلوب نابضة كثيرة في الخلفية */
         .beating-bg-heart {
             position: absolute; color: rgba(255, 0, 85, 0.4);
             pointer-events: none;
@@ -273,17 +271,28 @@
                 imgIdx = (imgIdx + 1) % bgImages.length;
                 document.getElementById('main-bg').style.backgroundImage = `url('${bgImages[imgIdx]}')`;
                 
-                const nP = activeP === 1 ? "player1" : "player2";
+                // تحديد المشغل النشط والمشغل القديم
+                const nP_id = activeP === 1 ? "player1" : "player2";
+                const oP_id = activeP === 1 ? "player2" : "player1";
                 const nL = activeP === 1 ? "layer1" : "layer2";
                 const oL = activeP === 1 ? "layer2" : "layer1";
                 
-                document.getElementById(nP).src = `https://streamable.com/e/${vids[vIdx]}?autoplay=1&nocontrols=1`;
+                const nP = document.getElementById(nP_id);
+                const oP = document.getElementById(oP_id);
+
+                // إيقاف وتفريغ الفيديو القديم تماماً لمنع تداخل الصوت
+                oP.src = ""; 
+
+                // تشغيل الفيديو الجديد
+                nP.src = `https://streamable.com/e/${vids[vIdx]}?autoplay=1&nocontrols=1`;
+                
                 document.getElementById(nL).classList.add('active-video');
                 document.getElementById(oL).classList.remove('active-video');
                 
                 overlay.style.opacity = '0';
                 startTyping();
-                vIdx = (vIdx + 1) % vids.length; activeP = activeP === 1 ? 2 : 1;
+                vIdx = (vIdx + 1) % vids.length; 
+                activeP = activeP === 1 ? 2 : 1;
             }, 400);
         }
 
