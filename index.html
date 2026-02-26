@@ -10,77 +10,88 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { height: 100%; width: 100%; background: var(--bg); color: white; overflow: hidden; font-family: 'Cairo', sans-serif; }
 
-        /* حاوية الفيديو - جعلناها بخلفية ثابتة لضمان عدم اختفاء الأزرار */
-        #video-bg { position: fixed; inset: 0; z-index: 1; opacity: 0.5; background: #000; }
-        iframe { width: 100%; height: 100%; transform: scale(1.7); pointer-events: none; }
+        /* طبقات الفيديو المزدوجة لضمان عدم انقطاع الصوت */
+        .video-layer { position: fixed; inset: 0; z-index: 5; opacity: 0; transition: opacity 0.8s ease-in-out; background: #000; }
+        .active-video { opacity: 0.5; z-index: 10; }
+        iframe { width: 100vw; height: 100vh; pointer-events: none; border: none; transform: scale(1.6); }
 
-        /* الشاشة الافتتاحية */
+        /* شاشة البداية */
         #splash { position: fixed; inset: 0; z-index: 2000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .avatar { width: 180px; height: 180px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); margin-bottom: 25px; }
+        .avatar { width: 160px; height: 160px; border-radius: 50%; border: 3px solid var(--neon); box-shadow: 0 0 20px var(--neon); margin-bottom: 20px; }
 
-        /* واجهة الأزرار - ثابتة ولا تختفي */
-        .main-ui { position: relative; z-index: 100; height: 100vh; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .neon-box { background: rgba(20, 20, 20, 0.95); border: 2px solid var(--neon); padding: 30px 20px; border-radius: 35px; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 85, 0.4); width: 90%; max-width: 400px; }
+        /* الواجهة */
+        #ui-layer { position: relative; z-index: 100; height: 100vh; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .neon-card { background: rgba(10, 10, 10, 0.85); border: 2px solid var(--neon); padding: 25px; border-radius: 30px; text-align: center; box-shadow: 0 0 30px rgba(255, 0, 85, 0.3); width: 85%; max-width: 380px; backdrop-filter: blur(10px); }
         
-        .btn { background: var(--neon); color: white; border: none; padding: 16px; border-radius: 50px; font-family: 'Lalezar'; font-size: 1.5rem; cursor: pointer; width: 100%; margin-bottom: 15px; display: block; text-decoration: none; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.3); transition: 0.3s; }
+        .btn { background: var(--neon); color: white; border: none; padding: 15px; border-radius: 50px; font-family: 'Lalezar'; font-size: 1.4rem; cursor: pointer; width: 100%; margin-bottom: 12px; display: block; text-decoration: none; transition: 0.3s; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.4); }
         .btn:active { transform: scale(0.95); }
-        .btn-alt { background: transparent; border: 1px solid #444; color: #888; font-size: 1rem; }
 
-        /* شاشة التلاشي الانتقالي */
-        #fade { position: fixed; inset: 0; background: #000; z-index: 1500; opacity: 0; pointer-events: none; transition: 1.2s; }
+        /* تأثير التلاشي السريع */
+        #fade-curtain { position: fixed; inset: 0; background: black; z-index: 1500; opacity: 0; pointer-events: none; transition: 0.5s ease-out; }
     </style>
 </head>
 <body>
 
-    <div id="fade"></div>
+    <div id="fade-curtain"></div>
 
     <div id="splash">
         <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="avatar">
-        <button class="btn" style="width: auto; padding: 10px 40px;" onclick="unlock()">ابدئي الآن 🔊</button>
-        <p style="color: #444; margin-top: 10px; font-size: 12px;">اضغطي لتفعيل الصوت والفيديو</p>
+        <button class="btn" style="width: auto; padding: 10px 40px;" onclick="init()">دخول 🔊</button>
     </div>
 
-    <div id="video-bg">
-        <iframe id="vid-frame" src="" frameborder="0" allow="autoplay; fullscreen"></iframe>
-    </div>
+    <div id="layer1" class="video-layer"><iframe id="player1" src="" allow="autoplay; fullscreen"></iframe></div>
+    <div id="layer2" class="video-layer"><iframe id="player2" src="" allow="autoplay; fullscreen"></iframe></div>
 
-    <div class="main-ui" id="ui">
-        <div class="neon-box">
-            <h2 id="msg" style="margin-bottom: 25px; min-height: 60px;">أنتِ الأميرة يا غدوش 👑</h2>
-            <button class="btn" onclick="next()">إعادة (تبديل ببطء) 🔄</button>
-            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn" style="background: #1877f2;">👤 فيسبوك</a>
-            <button class="btn btn-alt" onclick="location.reload()">🔙 عودة</button>
+    <div id="ui-layer">
+        <div class="neon-card">
+            <h1 id="quote" style="margin-bottom: 20px; font-size: 1.5rem; min-height: 40px;"></h1>
+            <button class="btn" onclick="switchVideo()">تبديل سريع ✨</button>
+            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn" style="background: #1877f2; font-size: 1.1rem;">👤 فيسبوك</a>
+            <p style="font-size: 10px; color: #444; cursor: pointer;" onclick="location.reload()">إعادة تحميل</p>
         </div>
     </div>
 
     <script>
-        const vList = ["2u533q", "70ymh0"];
-        const mList = ["جمالكِ يضيء المكان ✨", "أنتِ النجمة يا غدوش 🌟", "ابتسامتكِ هي السر 💖", "كل ثانية معكِ حكاية 🦋"];
-        let idx = 0;
+        const vids = ["2u533q", "70ymh0"];
+        const quotes = ["أنتِ النور يا غدوش ✨", "سحر عيونكِ يغلب الكل 💖", "غدوش.. الملكة دائماً 👑", "ابتسامتكِ حياة ✨"];
+        let currentIdx = 0;
+        let activePlayer = 1;
 
-        function unlock() {
-            // التفاعل هنا يحل مشكلة الصوت تماماً
+        function init() {
             document.getElementById('splash').style.display = 'none';
-            document.getElementById('ui').style.display = 'flex';
-            next();
+            document.getElementById('ui-layer').style.display = 'flex';
+            // تحميل أول فيديو فوراً
+            switchVideo(true);
         }
 
-        function next() {
-            const f = document.getElementById('fade');
-            f.style.opacity = "1"; // التلاشي يبدأ
+        function switchVideo(isFirst = false) {
+            const curtain = document.getElementById('fade-curtain');
+            if(!isFirst) curtain.style.opacity = "1"; // تلاشي سريع جداً
 
             setTimeout(() => {
-                const p = document.getElementById('vid-frame');
-                // نحدث الرابط والرسالة أثناء التعتيم
-                p.src = `https://streamable.com/e/${vList[idx]}?autoplay=1&nocontrols=1`;
-                document.getElementById('msg').innerText = mList[Math.floor(Math.random() * mList.length)];
+                const nextIdx = (currentIdx + 1) % vids.length;
+                const nextPlayerId = activePlayer === 1 ? "player2" : "player1";
+                const nextLayerId = activePlayer === 1 ? "layer2" : "layer1";
+                const currentPlayerId = activePlayer === 1 ? "player1" : "player2";
+                const currentLayerId = activePlayer === 1 ? "layer1" : "layer2";
+
+                // تحميل الفيديو الجديد في المشغل المخفي
+                const nextPlayer = document.getElementById(nextPlayerId);
+                nextPlayer.src = `https://streamable.com/e/${vids[currentIdx]}?autoplay=1&nocontrols=1`;
+
+                // تبديل الطبقات (تلاشي متداخل)
+                document.getElementById(nextLayerId).classList.add('active-video');
+                document.getElementById(currentLayerId).classList.remove('active-video');
                 
-                idx = (idx + 1) % vList.length;
+                document.getElementById('quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+                
+                activePlayer = activePlayer === 1 ? 2 : 1;
+                currentIdx = nextIdx;
 
                 setTimeout(() => {
-                    f.style.opacity = "0"; // نكشف المحتوى الجديد بنعومة
-                }, 800);
-            }, 1000);
+                    curtain.style.opacity = "0";
+                }, 300); // سرعة الكشف
+            }, isFirst ? 0 : 500); // سرعة الانتقال الكلي
         }
     </script>
 </body>
