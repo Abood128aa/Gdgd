@@ -3,151 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مملكة غدوش ✨</title>
+    <title>Ghadoush Universe ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@900&display=swap" rel="stylesheet">
     <style>
-        :root { --neon: #ff0055; --bg: #000; }
+        :root { --neon: #ff0055; --gold: #ffd700; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { height: 100%; width: 100%; background: var(--bg); color: white; overflow: hidden; font-family: 'Cairo', sans-serif; }
-
-        /* خلفية الصورة للشاشة الثانية */
-        #bg-image {
-            position: fixed; inset: 0;
-            background-image: url('https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg');
-            background-size: cover; background-position: center;
-            opacity: 0.3; /* تخفيف الشفافية للتباين */
-            z-index: 1; display: none;
-        }
-
-        .video-layer { position: fixed; inset: 0; z-index: 5; opacity: 0; transition: opacity 0.6s ease-in-out; }
-        .active-video { opacity: 0.45; z-index: 6; }
-        iframe { width: 100vw; height: 100vh; pointer-events: none; border: none; transform: scale(1.6); }
-
-        #splash { position: fixed; inset: 0; z-index: 2000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .avatar { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); margin-bottom: 20px; }
-
-        #ui-layer { position: relative; z-index: 100; height: 100vh; display: none; flex-direction: column; justify-content: center; align-items: center; }
         
-        .neon-card { 
-            background: rgba(0, 0, 0, 0.75); 
-            border: 3px solid var(--neon); 
-            padding: 35px 20px; border-radius: 40px; 
-            text-align: center; box-shadow: 0 0 40px rgba(255, 0, 85, 0.5); 
-            width: 90%; max-width: 450px; backdrop-filter: blur(12px);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        body, html { 
+            height: 100%; width: 100%; 
+            background: #000; color: white; 
+            overflow: hidden; font-family: 'Cairo', sans-serif; 
         }
 
-        /* تنسيق الجمل */
-        #quote-container { min-height: 120px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #quote { font-size: 1.9rem; font-weight: 900; line-height: 1.4; transition: 0.4s; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
-        #emoji { font-size: 3rem; margin-top: 10px; display: block; animation: bounce 1s infinite; }
+        /* صورة الخلفية الثابتة والواضحة */
+        #main-bg {
+            position: fixed; inset: 0;
+            background: url('https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg') no-repeat center center;
+            background-size: cover;
+            opacity: 0.4; /* وضوح متزن */
+            z-index: 1;
+        }
 
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes textAppear { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-        .text-anim { animation: textAppear 0.5s forwards; }
+        /* طبقة الفيديو (شفافة جداً لتظهر الصورة خلفها) */
+        .video-layer { position: fixed; inset: 0; z-index: 5; opacity: 0; transition: opacity 1s ease; }
+        .active-video { opacity: 0.3; z-index: 6; }
+        iframe { width: 100vw; height: 100vh; pointer-events: none; border: none; transform: scale(1.5); }
 
-        .btn { background: var(--neon); color: white; border: none; padding: 18px; border-radius: 50px; font-family: 'Lalezar'; font-size: 1.6rem; cursor: pointer; width: 100%; margin-bottom: 15px; display: block; text-decoration: none; transition: 0.3s; box-shadow: 0 8px 20px rgba(255, 0, 85, 0.4); }
-        .btn:active { transform: scale(0.92); }
+        /* شاشة البداية */
+        #splash { 
+            position: fixed; inset: 0; z-index: 2000; background: #000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        }
 
-        #fade-curtain { position: fixed; inset: 0; background: black; z-index: 1500; opacity: 0; pointer-events: none; transition: 0.4s; }
+        /* واجهة الأزرار */
+        #ui-layer { 
+            position: relative; z-index: 100; height: 100vh; 
+            display: none; flex-direction: column; justify-content: center; align-items: center; 
+        }
+
+        .neon-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 20px; border-radius: 50px;
+            text-align: center; width: 90%; max-width: 450px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        /* حاوية النصوص المحترفة */
+        #text-box { min-height: 150px; perspective: 1000px; overflow: hidden; }
+        
+        #quote {
+            font-size: 2.2rem; font-weight: 900; line-height: 1.3;
+            display: block; opacity: 0;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* أنيميشن الدخول */
+        .slide-in { opacity: 1 !important; transform: translateY(0) rotateX(0deg); }
+        .slide-out { opacity: 0 !important; transform: translateY(-30px) rotateX(-90deg); }
+
+        #emoji { font-size: 3.5rem; margin-top: 15px; display: block; filter: drop-shadow(0 0 10px var(--neon)); }
+
+        .btn {
+            background: linear-gradient(45deg, var(--neon), #ff00ff);
+            color: white; border: none; padding: 20px; border-radius: 60px;
+            font-family: 'Lalezar'; font-size: 1.7rem; cursor: pointer;
+            width: 100%; margin-top: 25px; transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(255, 0, 85, 0.4);
+        }
+        .btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        #fade-overlay { position: fixed; inset: 0; background: black; z-index: 1500; opacity: 0; pointer-events: none; transition: 0.5s; }
     </style>
 </head>
 <body>
 
-    <div id="fade-curtain"></div>
-    <div id="bg-image"></div>
+    <div id="main-bg"></div>
+    <div id="fade-overlay"></div>
 
     <div id="splash">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="avatar">
-        <button class="btn" style="width: auto; padding: 12px 50px;" onclick="init()">دخول عالمي ✨</button>
+        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" style="width:150px; border-radius:50%; margin-bottom:20px; border:3px solid var(--neon);">
+        <button class="btn" style="width:auto; padding:10px 40px;" onclick="init()">فتح عالم السحر ✨</button>
     </div>
 
     <div id="layer1" class="video-layer"><iframe id="player1" src="" allow="autoplay; fullscreen"></iframe></div>
     <div id="layer2" class="video-layer"><iframe id="player2" src="" allow="autoplay; fullscreen"></iframe></div>
 
     <div id="ui-layer">
-        <div class="neon-card" id="card">
-            <div id="quote-container">
-                <p id="quote" class="text-anim">أنتِ النور يا غدوش ✨</p>
+        <div class="neon-card">
+            <div id="text-box">
+                <span id="quote">أنتِ حكاية لم يروِها زمن..</span>
                 <span id="emoji">💎</span>
             </div>
-            <button class="btn" onclick="switchContent()">اكتشفي المزيد يا غدغد 🔄</button>
-            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn" style="background: #1877f2; font-size: 1.2rem;">بروفايل الجميلة غادة 👤</a>
+            <button class="btn" onclick="nextWave()">المزيد من السحر 🔄</button>
         </div>
     </div>
 
     <script>
         const vids = ["2u533q", "70ymh0"];
+        const colors = ["#00ffcc", "#ff0055", "#fffb00", "#0099ff", "#ff00ff", "#00ff00", "#ff8800"];
+        
         const compliments = [
-            {t: "غادة.. يا وجه القمر المنير في دنيتي", e: "🌕"}, {t: "غدوش.. جمالكِ يدرس للأجيال القادمة", e: "👑"},
-            {t: "يا غدغد.. حضوركِ طاغي وأنا بكِ مغرم", e: "💖"}, {t: "غادة.. عيونكِ قصة عجز الشعراء عن وصفها", e: "👁️"},
-            {t: "غدوش.. رقتكِ تضاهي رقة الورد في نيسان", e: "🌹"}, {t: "غدغد.. ضحكتكِ هي اللحن المفضل لقلبي", e: "🎶"},
-            {t: "يا غادة.. أنتِ الملكة ولا يليق التاج إلا بكِ", e: "👸"}, {t: "غدوش.. سحر روحكِ يجذب القلوب بلا استئذان", e: "✨"},
-            {t: "غدغد.. قلبكِ أبيض كالثلج وصافي كالسماء", e: "☁️"}, {t: "يا غادة.. أنتِ الجمال في زمن غاب فيه الجمال", e: "🌷"},
-            {t: "غدوش.. كأنكِ خُلقتِ من خيوط الشمس الذهبية", e: "☀️"}, {t: "يا غدغد.. دلالكِ يربك نبضات قلبي", e: "💓"},
-            {t: "غادة.. أنتِ المعجزة التي كنت أنتظرها", e: "🎁"}, {t: "غدوش.. يا أغلى ما أملك في هذا الكون", e: "🌍"},
-            {t: "غدغد.. جمالكِ هادئ كالبحر وعميق كالمحيط", e: "🌊"}, {t: "يا غادة.. فداكِ عمري وقلبي وما ملكت", e: "💍"},
-            {t: "غدوش.. دمتِ لي نوراً وروحاً وسكناً", e: "🏡"}, {t: "يا غدغد.. أنتِ كالنجمة التي لا تغيب أبداً", e: "⭐"},
-            {t: "غادة.. يا ريحانة فواحة بالعطر والجمال", e: "🌿"}, {t: "غدوش.. تفاصيلكِ هي الجنة بعينها", e: "🕊️"},
-            {t: "غدغد.. يا أميرة الحكايات وأجمل الروايات", e: "📖"}, {t: "غادة.. جمالكِ فتنة لا ترحم قلبي الضعيف", e: "💘"},
-            {t: "غدوش.. أنتِ لستِ فقط بشر، أنتِ ملاك", e: "👼"}, {t: "يا غدغد.. ذوقكِ الرفيع يعكس روحكِ النقية", e: "💎"},
-            {t: "غادة.. كلما نظرت إليكِ يبتسم قدري", e: "🍀"}, {t: "غدوش.. أنتِ الأمان في هذا العالم الصاخب", e: "🛡️"},
-            {t: "غدغد.. يا بستاناً من الفرح وسط الأحزان", e: "🌻"}, {t: "يا غادة.. اسمكِ وحده يكفي لتهدئة روعي", e: "📜"},
-            {t: "غدوش.. عجز الحرف عن مدحكِ فوصفكِ خيال", e: "🎨"}, {t: "غدغد.. يا عسلاً مصفى يشفي العليل", e: "🍯"},
-            {t: "غادة.. حضوركِ عيد وغيابكِ انتظار مرير", e: "🎈"}, {t: "غدوش.. أنتِ الصدفة الأجمل في حياتي", e: "🎐"},
-            {t: "يا غدغد.. كلكِ على بعضكِ سكر ونور", e: "🍭"}, {t: "غادة.. أنتِ الملهمة في كل خطوة أخطوها", e: "✒️"},
-            {t: "غدوش.. جمالكِ يتجدد كالفصول الأربعة", e: "🍁"}, {t: "غدغد.. يا أغنية حب لم تنتهِ فصولها", e: "🎻"},
-            {t: "يا غادة.. أنتِ الملاذ والوطن والانتماء", e: "🧭"}, {t: "غدوش.. لا يوجد كلمات تصف عظمة قدركِ", e: "🔝"},
-            {t: "غدغد.. أنتِ اللؤلؤة النادرة في أعماق قلبي", e: "🐚"}, {t: "يا غادة.. ختامه مسك وأنتِ كل المسك", e: "🕯️"}
+            {t: "أنتِ النور الذي يرفض الانطفاء في هذا العالم", e: "✨"},
+            {t: "جمالكِ يتجاوز حدود الوصف ويكسر قواعد المنطق", e: "🌌"},
+            {t: "في ملامحكِ هدوء البحر وفي روحكِ شموخ الجبال", e: "🌊"},
+            {t: "كأنكِ قمرٌ سقط سهواً من السماء ليستقر في يومي", e: "🌙"},
+            {t: "رقتكِ تجعل الورد ينحني خجلاً من حضوركِ الباهي", e: "🌷"},
+            {t: "أنتِ القصيدة التي عجز أعظم الشعراء عن كتابتها", e: "✒️"},
+            {t: "سحر عيونكِ يختصر ألف حكاية من العشق والجمال", e: "👁️"},
+            {t: "خُلقتِ لتكوني ملكة، والتاج لا يليق إلا برأسكِ", e: "👑"},
+            {t: "حضوركِ يملأ المكان بهجة، وغيابكِ يوقف نبض الزمان", e: "⏳"},
+            {t: "أنتِ المعجزة التي تجعلني أؤمن أن الجمال لا يزال بخير", e: "🎁"},
+            {t: "نظرة منكِ كفيلة بإعادة ترتيب الفوضى في قلبي", e: "🎯"},
+            {t: "يا لؤلؤة نادرة وُجدت في أعماق روحٍ نقية", e: "🐚"},
+            {t: "ابتسامتكِ هي اللحن الوحيد الذي لا أملّ من سماعه", e: "🎶"},
+            {t: "كأنكِ نُسجتِ من خيوط الشمس ومن ضياء الفجر", e: "🌅"},
+            {t: "أنتِ الملاذ الآمن والوطن الذي لا يُغادره القلب", e: "🏡"},
+            {t: "تفاصيلكِ الصغيرة هي أعظم انتصاراتي في هذه الحياة", e: "🎖️"},
+            {t: "كلما مر ذكركِ، فاحت الأرض بعطر الريحان والياسمين", e: "🌿"},
+            {t: "أنتِ لستِ مجرد صدفة، أنتِ قدرٌ جميل طال انتظاره", e: "🎈"},
+            {t: "جمالكِ لا يشيخ، بل يزداد مع كل ثانية عظمة ورُقياً", e: "💎"},
+            {t: "يا سيدة القلب، دلالكِ هو الفتنة التي أهواها", e: "💘"},
+            {t: "بين يديكِ يهدأ صخب العالم وتستريح الروح", e: "🕊️"},
+            {t: "أنتِ النجمة التي تُرشد التائهين في عتمة الليالي", e: "⭐"},
+            {t: "روحكِ النقية هي التي تمنح الأشياء من حولكِ بريقاً", e: "🔮"},
+            {t: "لا مثيل لكِ، فأنتِ النسخة الوحيدة والأصلية للكمال", e: "📜"},
+            {t: "فداكِ العمر، فأنتِ الحياة وكل ما يأتي بعدها", e: "💍"},
+            {t: "حين تضحكين، يبتسم القدر وتتفتح براعم الأمل", e: "🌻"},
+            {t: "أنتِ السحر الحلال الذي يسلب الألباب دون عناء", e: "🧿"},
+            {t: "جمالكِ هادئ كالفجر، ولكنه عميق كالمحيط الكبير", e: "🌊"},
+            {t: "يا عسلاً مصفى يشفي الروح من متاعب الحياة", e: "🍯"},
+            {t: "أنتِ الملهمة التي تجعل المستحيل يبدو ممكناً", e: "🚀"},
+            {t: "يا وجهاً يعيد لي طفولتي ودهشتي الأولى بالأشياء", e: "🧸"},
+            {t: "أنتِ الأناقة التي لا تشتريها الأموال، بل تمنحها الروح", e: "👗"},
+            {t: "في قربكِ تشرق الشمس، وفي بعدكِ يحل الخريف", e: "🍂"},
+            {t: "يا غصناً ليناً يتمايل بجماله في بستان قلبي", e: "🌳"},
+            {t: "أنتِ الحلم الذي استيقظتُ لأجده حقيقةً أمامي", e: "🎐"},
+            {t: "سلطانة في مملكتكِ، ولكِ منا الولاء والحب الأبدي", e: "⚜️"},
+            {t: "لا تحزني، فوجهكِ خُلق ليضحك والكون ليحتفي بكِ", e: "🌈"},
+            {t: "جمالكِ يجدد إيماني بأن الله جميل يحب الجمال", e: "🕌"},
+            {t: "أنتِ الختام المسك لكل الأشياء الجميلة في عيني", e: "🕯️"},
+            {t: "دمتِ لي حباً لا ينتهي، وجمالاً لا يذبل أبداً", e: "♾️"}
         ];
 
-        let currentIdx = 0;
-        let activePlayer = 1;
+        let vIdx = 0;
+        let activeP = 1;
 
         function init() {
             document.getElementById('splash').style.display = 'none';
-            document.getElementById('bg-image').style.display = 'block';
             document.getElementById('ui-layer').style.display = 'flex';
-            switchContent(true);
+            nextWave(true);
         }
 
-        function switchContent(isFirst = false) {
-            const curtain = document.getElementById('fade-curtain');
-            if(!isFirst) curtain.style.opacity = "1";
+        function nextWave(isFirst = false) {
+            const quote = document.getElementById('quote');
+            const emoji = document.getElementById('emoji');
+            
+            if(!isFirst) quote.className = 'slide-out';
 
             setTimeout(() => {
-                const nextPlayerId = activePlayer === 1 ? "player1" : "player2";
-                const nextLayerId = activePlayer === 1 ? "layer1" : "layer2";
-                const otherLayerId = activePlayer === 1 ? "layer2" : "layer1";
+                const nextPId = activeP === 1 ? "player1" : "player2";
+                const nextLId = activeP === 1 ? "layer1" : "layer2";
+                const otherLId = activeP === 1 ? "layer2" : "layer1";
 
-                const player = document.getElementById(nextPlayerId);
-                player.src = `https://streamable.com/e/${vids[currentIdx]}?autoplay=1&nocontrols=1`;
+                document.getElementById(nextPId).src = `https://streamable.com/e/${vids[vIdx]}?autoplay=1&nocontrols=1`;
+                document.getElementById(nextLId).classList.add('active-video');
+                document.getElementById(otherLId).classList.remove('active-video');
 
-                document.getElementById(nextLayerId).classList.add('active-video');
-                document.getElementById(otherLayerId).classList.remove('active-video');
+                // تحديث المحتوى
+                const randomComp = compliments[Math.floor(Math.random() * compliments.length)];
+                quote.innerText = randomComp.t;
+                emoji.innerText = randomComp.e;
+                quote.style.color = colors[Math.floor(Math.random() * colors.length)];
 
-                // تحديث الجملة واللون والإيموجي
-                const qObj = compliments[Math.floor(Math.random() * compliments.length)];
-                const quoteEl = document.getElementById('quote');
-                const emojiEl = document.getElementById('emoji');
-                
-                quoteEl.innerText = qObj.t;
-                emojiEl.innerText = qObj.e;
-                
-                // تغيير اللون عشوائياً (ألوان نيون زاهية)
-                const colors = ['#ff0055', '#00ffcc', '#fffb00', '#ff00ff', '#00ff00', '#0099ff'];
-                quoteEl.style.color = colors[Math.floor(Math.random()*colors.length)];
-                
-                // إعادة تشغيل الأنيميشن
-                quoteEl.classList.remove('text-anim');
-                void quoteEl.offsetWidth; 
-                quoteEl.classList.add('text-anim');
+                // تفعيل أنيميشن الدخول
+                quote.className = 'slide-in';
 
-                currentIdx = (currentIdx + 1) % vids.length;
-                activePlayer = activePlayer === 1 ? 2 : 1;
-
-                setTimeout(() => { curtain.style.opacity = "0"; }, 300);
-            }, isFirst ? 0 : 400);
+                vIdx = (vIdx + 1) % vids.length;
+                activeP = activeP === 1 ? 2 : 1;
+            }, isFirst ? 0 : 600);
         }
     </script>
 </body>
