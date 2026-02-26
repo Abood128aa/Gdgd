@@ -9,7 +9,7 @@
         :root {
             --neon: #ff0055;
             --neon-glow: rgba(255, 0, 85, 0.6);
-            --card-bg: rgba(20, 20, 20, 0.9);
+            --card-bg: rgba(15, 15, 15, 0.95);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,10 +21,11 @@
             color: white;
         }
 
-        /* خلفية الفيديو */
+        /* حاوية الفيديو */
         #video-bg-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none; opacity: 0.5;
+            z-index: 1; pointer-events: none; opacity: 0.6;
+            transition: opacity 0.5s ease;
         }
         #video-bg-container iframe {
             width: 100vw; height: 100vh;
@@ -32,48 +33,39 @@
             pointer-events: none;
         }
 
-        /* شريط التقدم */
+        /* شريط التقدم العلوي */
         .top-bar {
             position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-            width: 85%; height: 10px; background: rgba(255,255,255,0.05);
-            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-            z-index: 1000; overflow: hidden;
+            width: 85%; height: 8px; background: rgba(255,255,255,0.05);
+            border-radius: 20px; z-index: 1000;
         }
         #progress-line {
             height: 100%; width: 0%; background: var(--neon);
             box-shadow: 0 0 15px var(--neon);
-            transition: width 0.6s ease;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* الشاشة الافتتاحية */
+        /* الشاشة الأولى */
         #welcome-screen {
             position: fixed; inset: 0; z-index: 2000;
             background: radial-gradient(circle, #1a1a1a, #000);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: transform 0.8s cubic-bezier(1, 0, 0, 1);
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
         }
 
         .profile-img-btn {
-            width: 220px; height: 220px;
-            border-radius: 50%;
-            border: 4px solid var(--neon);
-            box-shadow: 0 0 40px var(--neon-glow);
-            cursor: pointer;
-            transition: 0.4s;
-            object-fit: cover;
-            margin-bottom: 30px;
-            animation: pulse 2s infinite;
+            width: 200px; height: 200px; border-radius: 50%;
+            border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon-glow);
+            cursor: pointer; transition: 0.4s; object-fit: cover;
+            margin-bottom: 25px; animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 20px var(--neon-glow); }
-            50% { transform: scale(1.05); box-shadow: 0 0 50px var(--neon); }
-            100% { transform: scale(1); box-shadow: 0 0 20px var(--neon-glow); }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px var(--neon-glow); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px var(--neon); }
         }
 
-        .profile-img-btn:hover { transform: scale(1.1); }
-
-        /* واجهة العرض */
+        /* واجهة المفاجأة والفاكشن */
         .overlay-content {
             position: relative; z-index: 100; height: 100vh;
             display: flex; flex-direction: column; justify-content: center;
@@ -83,35 +75,45 @@
         .neon-card {
             background: var(--card-bg);
             border: 2px solid var(--neon);
-            box-shadow: 0 0 30px var(--neon-glow);
+            box-shadow: 0 0 40px var(--neon-glow);
             border-radius: 35px;
             padding: 40px 25px;
             width: 95%; max-width: 450px;
             text-align: center;
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
+            transition: all 0.5s ease; /* الفاكشن الخاص بالتبديل */
         }
+
+        .card-hidden { opacity: 0; transform: scale(0.8) translateY(30px); }
 
         #dynamic-quote {
-            font-size: 2rem; font-weight: 900; margin-bottom: 25px;
-            min-height: 90px; transition: 0.5s;
+            font-size: 1.8rem; font-weight: 900; margin-bottom: 30px;
+            min-height: 80px; text-shadow: 0 0 15px var(--neon-glow);
         }
 
+        /* الأزرار */
         .btn-neon {
             background: var(--neon); color: white; border: none;
-            padding: 20px; border-radius: 50px; font-size: 1.6rem;
+            padding: 18px; border-radius: 50px; font-size: 1.5rem;
             font-family: 'Lalezar'; cursor: pointer; width: 100%;
-            box-shadow: 0 10px 20px var(--neon-glow); transition: 0.3s;
-            margin-bottom: 15px; display: block; text-decoration: none;
+            box-shadow: 0 8px 20px var(--neon-glow); transition: 0.3s;
+            margin-bottom: 12px; display: block; text-decoration: none;
         }
-        .btn-neon:active { transform: scale(0.95); }
 
-        .lvl-badge { color: #888; font-size: 14px; margin-top: 15px; letter-spacing: 2px; }
+        .btn-back {
+            background: transparent; border: 1px solid #444;
+            color: #888; font-size: 1rem; padding: 12px;
+        }
+        .btn-back:hover { border-color: var(--neon); color: white; }
 
+        .lvl-badge { color: #555; font-size: 13px; margin-top: 10px; letter-spacing: 2px; }
+
+        /* تأثير القلوب */
         .heart-pop {
             position: absolute; pointer-events: none;
-            animation: flyOut 1s ease-out forwards;
+            animation: fly 1s ease-out forwards;
         }
-        @keyframes flyOut {
+        @keyframes fly {
             0% { transform: scale(0); opacity: 1; }
             100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
         }
@@ -122,15 +124,8 @@
     <div class="top-bar"><div id="progress-line"></div></div>
 
     <div id="welcome-screen">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" 
-             class="profile-img-btn" 
-             alt="غدوش" 
-             onclick="initExperience()">
-        
-        <button class="btn-neon" style="width: auto; padding: 15px 50px;" onclick="initExperience()">
-            اضغطي لفتح العالم ✨
-        </button>
-        <p style="margin-top: 15px; color: #666; font-size: 14px;">انقري على الصورة أو الزر</p>
+        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="profile-img-btn" onclick="initExperience()">
+        <button class="btn-neon" style="width: auto; padding: 15px 40px;" onclick="initExperience()">ابدئي التجربة يا غدوش ✨</button>
     </div>
 
     <div id="video-bg-container">
@@ -138,17 +133,16 @@
     </div>
 
     <div class="overlay-content" id="ui-layer" style="display: none;">
-        <div class="neon-card">
+        <div class="neon-card" id="main-card">
             <div id="dynamic-quote"></div>
             
-            <button class="btn-neon" onclick="nextWave()">إعادة يا غدوش 🔄</button>
+            <button class="btn-neon" onclick="refreshContent()">إعادة يا غدوش 🔄</button>
             
-            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn-neon" 
-               style="background: transparent; border: 2px solid #444; font-size: 1.1rem; box-shadow: none;">
-                👤 الحساب الشخصي
-            </a>
+            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn-neon" style="background: #1877f2; font-size: 1.1rem; box-shadow: none;">👤 بروفايل فيسبوك</a>
             
-            <div class="lvl-badge">SMILE LEVEL: <span id="lvl-text" style="color:var(--neon)">1</span></div>
+            <button class="btn-neon btn-back" onclick="goBack()">🔙 عودة للشاشة الرئيسية</button>
+            
+            <div class="lvl-badge">ENERGY LEVEL: <span id="lvl-text" style="color:var(--neon)">1</span></div>
         </div>
     </div>
 
@@ -157,45 +151,61 @@
         let vIndex = 0;
         const vids = ["2u533q", "70ymh0"]; 
         const quotes = [
-            "أنتِ النجمة التي تضيء عالمي يا غدوش 🌟",
-            "غدوش.. جمالكِ يتخطى الحدود 💖",
-            "ابتسامتكِ هي أجمل فيديو في الكون 👑",
-            "طاقة إيجابية وجمال لا ينتهي ✨",
-            "كل إعادة هي حب جديد لكِ يا غدوش 🦋"
+            "أنتِ النور الذي يضيء أيامي يا غدوش ✨",
+            "غدوش.. جمالكِ ليس له مثيل 💖",
+            "ابتسامتكِ هي سر السعادة في هذا المكان 👑",
+            "كل ثانية معكِ هي حكاية جميلة ✨",
+            "أنتِ الأميرة في عالمكِ الخاص يا غدوش 🦋"
         ];
         const fonts = ["'Lalezar'", "'Cairo'", "'Tajawal'"];
 
         function initExperience() {
             document.getElementById('welcome-screen').style.transform = "translateY(-100%)";
             document.getElementById('ui-layer').style.display = 'flex';
-            nextWave();
+            refreshContent();
         }
 
-        function nextWave() {
-            waveCount++;
-            document.getElementById('progress-line').style.width = Math.min(waveCount * 12, 100) + "%";
-            document.getElementById('lvl-text').innerText = waveCount;
-
-            const engine = document.getElementById('cinema-engine');
-            engine.src = `https://streamable.com/e/${vids[vIndex]}?autoplay=1&nocontrols=1`;
-            vIndex = (vIndex + 1) % vids.length;
-
-            const text = document.getElementById('dynamic-quote');
-            text.style.opacity = 0;
+        function refreshContent() {
+            const card = document.getElementById('main-card');
+            
+            // 1. تطبيق فاكشن الإخفاء (Fade Out)
+            card.classList.add('card-hidden');
+            
             setTimeout(() => {
+                waveCount++;
+                document.getElementById('progress-line').style.width = Math.min(waveCount * 15, 100) + "%";
+                document.getElementById('lvl-text').innerText = waveCount;
+
+                // 2. تغيير الفيديو
+                const engine = document.getElementById('cinema-engine');
+                engine.src = `https://streamable.com/e/${vids[vIndex]}?autoplay=1&nocontrols=1`;
+                vIndex = (vIndex + 1) % vids.length;
+
+                // 3. تغيير النص والخط
+                const text = document.getElementById('dynamic-quote');
                 text.innerText = quotes[Math.floor(Math.random() * quotes.length)];
                 text.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
                 text.style.color = `hsl(${Math.random()*20 + 340}, 100%, 80%)`;
-                text.style.opacity = 1;
-            }, 300);
 
-            for(let i=0; i<25; i++) spawnHeart();
+                // 4. إظهار البطاقة مرة أخرى (Fade In)
+                card.classList.remove('card-hidden');
+                
+                // 5. انفجار القلوب
+                for(let i=0; i<20; i++) spawnHeart();
+            }, 500); // مدة الفاكشن
+        }
+
+        function goBack() {
+            document.getElementById('welcome-screen').style.transform = "translateY(0)";
+            document.getElementById('cinema-engine').src = "";
+            waveCount = 0;
+            document.getElementById('progress-line').style.width = "0%";
         }
 
         function spawnHeart() {
             const h = document.createElement('div');
             h.className = 'heart-pop';
-            h.innerHTML = ['❤️','✨','💖','👑'][Math.floor(Math.random()*4)];
+            h.innerHTML = ['❤️','✨','💖'][Math.floor(Math.random()*3)];
             h.style.left = "50%"; h.style.top = "50%";
             h.style.setProperty('--tx', (Math.random()-0.5)*800 + "px");
             h.style.setProperty('--ty', (Math.random()-0.5)*800 + "px");
