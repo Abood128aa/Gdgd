@@ -15,67 +15,70 @@
             overflow: hidden; font-family: 'Cairo', sans-serif; 
         }
 
-        /* صورة الخلفية الثابتة والواضحة */
+        /* الصورة الخلفية */
         #main-bg {
             position: fixed; inset: 0;
             background: url('https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg') no-repeat center center;
             background-size: cover;
-            opacity: 0.4; /* وضوح متزن */
+            opacity: 0.45;
             z-index: 1;
         }
 
-        /* طبقة الفيديو (شفافة جداً لتظهر الصورة خلفها) */
-        .video-layer { position: fixed; inset: 0; z-index: 5; opacity: 0; transition: opacity 1s ease; }
-        .active-video { opacity: 0.3; z-index: 6; }
+        /* طبقات الفيديو */
+        .video-layer { position: fixed; inset: 0; z-index: 5; opacity: 0; transition: opacity 0.8s ease; }
+        .active-video { opacity: 0.35; z-index: 6; }
         iframe { width: 100vw; height: 100vh; pointer-events: none; border: none; transform: scale(1.5); }
 
-        /* شاشة البداية */
         #splash { 
             position: fixed; inset: 0; z-index: 2000; background: #000; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
         }
 
-        /* واجهة الأزرار */
         #ui-layer { 
             position: relative; z-index: 100; height: 100vh; 
             display: none; flex-direction: column; justify-content: center; align-items: center; 
         }
 
         .neon-card {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            padding: 40px 20px; border-radius: 50px;
-            text-align: center; width: 90%; max-width: 450px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            padding: 35px 20px; border-radius: 45px;
+            text-align: center; width: 92%; max-width: 450px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
         }
 
-        /* حاوية النصوص المحترفة */
-        #text-box { min-height: 150px; perspective: 1000px; overflow: hidden; }
+        #text-box { min-height: 140px; perspective: 1000px; overflow: hidden; margin-bottom: 10px; }
         
         #quote {
-            font-size: 2.2rem; font-weight: 900; line-height: 1.3;
+            font-size: 2.1rem; font-weight: 900; line-height: 1.4;
             display: block; opacity: 0;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        /* أنيميشن الدخول */
-        .slide-in { opacity: 1 !important; transform: translateY(0) rotateX(0deg); }
-        .slide-out { opacity: 0 !important; transform: translateY(-30px) rotateX(-90deg); }
+        .slide-in { opacity: 1 !important; transform: scale(1) rotateX(0deg); }
+        .slide-out { opacity: 0 !important; transform: scale(0.8) rotateX(-90deg); }
 
-        #emoji { font-size: 3.5rem; margin-top: 15px; display: block; filter: drop-shadow(0 0 10px var(--neon)); }
+        #emoji { font-size: 3rem; margin-top: 10px; display: block; }
 
         .btn {
-            background: linear-gradient(45deg, var(--neon), #ff00ff);
-            color: white; border: none; padding: 20px; border-radius: 60px;
-            font-family: 'Lalezar'; font-size: 1.7rem; cursor: pointer;
-            width: 100%; margin-top: 25px; transition: 0.3s;
-            box-shadow: 0 10px 30px rgba(255, 0, 85, 0.4);
+            background: linear-gradient(45deg, var(--neon), #ff4d88);
+            color: white; border: none; padding: 18px; border-radius: 60px;
+            font-family: 'Lalezar'; font-size: 1.6rem; cursor: pointer;
+            width: 100%; margin-top: 20px; transition: 0.3s;
+            box-shadow: 0 10px 25px rgba(255, 0, 85, 0.3);
         }
-        .btn:hover { transform: scale(1.05); filter: brightness(1.2); }
 
-        #fade-overlay { position: fixed; inset: 0; background: black; z-index: 1500; opacity: 0; pointer-events: none; transition: 0.5s; }
+        /* زر الرجوع */
+        .btn-back {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 1rem; padding: 10px 30px; margin-top: 15px;
+            color: #aaa; text-decoration: none; border-radius: 50px;
+        }
+        .btn-back:hover { background: rgba(255,255,255,0.1); color: white; }
+
+        #fade-overlay { position: fixed; inset: 0; background: black; z-index: 1500; opacity: 0; pointer-events: none; transition: 0.6s; }
     </style>
 </head>
 <body>
@@ -84,8 +87,8 @@
     <div id="fade-overlay"></div>
 
     <div id="splash">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" style="width:150px; border-radius:50%; margin-bottom:20px; border:3px solid var(--neon);">
-        <button class="btn" style="width:auto; padding:10px 40px;" onclick="init()">فتح عالم السحر ✨</button>
+        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" style="width:140px; border-radius:50%; margin-bottom:20px; border:3px solid var(--neon);">
+        <button class="btn" style="width:auto; padding:10px 45px;" onclick="init()">فتح عالم السحر ✨</button>
     </div>
 
     <div id="layer1" class="video-layer"><iframe id="player1" src="" allow="autoplay; fullscreen"></iframe></div>
@@ -94,58 +97,33 @@
     <div id="ui-layer">
         <div class="neon-card">
             <div id="text-box">
-                <span id="quote">أنتِ حكاية لم يروِها زمن..</span>
+                <span id="quote">أنتِ الحكاية التي لا تكررها الأيام..</span>
                 <span id="emoji">💎</span>
             </div>
             <button class="btn" onclick="nextWave()">المزيد من السحر 🔄</button>
+            <button class="btn-back" onclick="goBack()">🔙 رجوع للبداية</button>
         </div>
     </div>
 
     <script>
         const vids = ["2u533q", "70ymh0"];
-        const colors = ["#00ffcc", "#ff0055", "#fffb00", "#0099ff", "#ff00ff", "#00ff00", "#ff8800"];
+        const colors = ["#00ffcc", "#ff0055", "#fffb00", "#ff00ff", "#00ff00", "#50b7f5"];
         
         const compliments = [
             {t: "أنتِ النور الذي يرفض الانطفاء في هذا العالم", e: "✨"},
             {t: "جمالكِ يتجاوز حدود الوصف ويكسر قواعد المنطق", e: "🌌"},
             {t: "في ملامحكِ هدوء البحر وفي روحكِ شموخ الجبال", e: "🌊"},
             {t: "كأنكِ قمرٌ سقط سهواً من السماء ليستقر في يومي", e: "🌙"},
-            {t: "رقتكِ تجعل الورد ينحني خجلاً من حضوركِ الباهي", e: "🌷"},
             {t: "أنتِ القصيدة التي عجز أعظم الشعراء عن كتابتها", e: "✒️"},
-            {t: "سحر عيونكِ يختصر ألف حكاية من العشق والجمال", e: "👁️"},
             {t: "خُلقتِ لتكوني ملكة، والتاج لا يليق إلا برأسكِ", e: "👑"},
-            {t: "حضوركِ يملأ المكان بهجة، وغيابكِ يوقف نبض الزمان", e: "⏳"},
             {t: "أنتِ المعجزة التي تجعلني أؤمن أن الجمال لا يزال بخير", e: "🎁"},
-            {t: "نظرة منكِ كفيلة بإعادة ترتيب الفوضى في قلبي", e: "🎯"},
-            {t: "يا لؤلؤة نادرة وُجدت في أعماق روحٍ نقية", e: "🐚"},
             {t: "ابتسامتكِ هي اللحن الوحيد الذي لا أملّ من سماعه", e: "🎶"},
-            {t: "كأنكِ نُسجتِ من خيوط الشمس ومن ضياء الفجر", e: "🌅"},
             {t: "أنتِ الملاذ الآمن والوطن الذي لا يُغادره القلب", e: "🏡"},
-            {t: "تفاصيلكِ الصغيرة هي أعظم انتصاراتي في هذه الحياة", e: "🎖️"},
-            {t: "كلما مر ذكركِ، فاحت الأرض بعطر الريحان والياسمين", e: "🌿"},
-            {t: "أنتِ لستِ مجرد صدفة، أنتِ قدرٌ جميل طال انتظاره", e: "🎈"},
-            {t: "جمالكِ لا يشيخ، بل يزداد مع كل ثانية عظمة ورُقياً", e: "💎"},
-            {t: "يا سيدة القلب، دلالكِ هو الفتنة التي أهواها", e: "💘"},
-            {t: "بين يديكِ يهدأ صخب العالم وتستريح الروح", e: "🕊️"},
-            {t: "أنتِ النجمة التي تُرشد التائهين في عتمة الليالي", e: "⭐"},
-            {t: "روحكِ النقية هي التي تمنح الأشياء من حولكِ بريقاً", e: "🔮"},
             {t: "لا مثيل لكِ، فأنتِ النسخة الوحيدة والأصلية للكمال", e: "📜"},
-            {t: "فداكِ العمر، فأنتِ الحياة وكل ما يأتي بعدها", e: "💍"},
             {t: "حين تضحكين، يبتسم القدر وتتفتح براعم الأمل", e: "🌻"},
-            {t: "أنتِ السحر الحلال الذي يسلب الألباب دون عناء", e: "🧿"},
-            {t: "جمالكِ هادئ كالفجر، ولكنه عميق كالمحيط الكبير", e: "🌊"},
-            {t: "يا عسلاً مصفى يشفي الروح من متاعب الحياة", e: "🍯"},
-            {t: "أنتِ الملهمة التي تجعل المستحيل يبدو ممكناً", e: "🚀"},
-            {t: "يا وجهاً يعيد لي طفولتي ودهشتي الأولى بالأشياء", e: "🧸"},
-            {t: "أنتِ الأناقة التي لا تشتريها الأموال، بل تمنحها الروح", e: "👗"},
-            {t: "في قربكِ تشرق الشمس، وفي بعدكِ يحل الخريف", e: "🍂"},
-            {t: "يا غصناً ليناً يتمايل بجماله في بستان قلبي", e: "🌳"},
             {t: "أنتِ الحلم الذي استيقظتُ لأجده حقيقةً أمامي", e: "🎐"},
-            {t: "سلطانة في مملكتكِ، ولكِ منا الولاء والحب الأبدي", e: "⚜️"},
-            {t: "لا تحزني، فوجهكِ خُلق ليضحك والكون ليحتفي بكِ", e: "🌈"},
-            {t: "جمالكِ يجدد إيماني بأن الله جميل يحب الجمال", e: "🕌"},
-            {t: "أنتِ الختام المسك لكل الأشياء الجميلة في عيني", e: "🕯️"},
-            {t: "دمتِ لي حباً لا ينتهي، وجمالاً لا يذبل أبداً", e: "♾️"}
+            {t: "دمتِ لي حباً لا ينتهي، وجمالاً لا يذبل أبداً", e: "♾️"},
+            {t: "أنتِ الأناقة التي لا تشتريها الأموال، بل تمنحها الروح", e: "👗"}
         ];
 
         let vIdx = 0;
@@ -157,13 +135,23 @@
             nextWave(true);
         }
 
+        function stopOldPlayer() {
+            const oldPId = activeP === 1 ? "player2" : "player1";
+            document.getElementById(oldPId).src = ""; // إيقاف الصوت القديم تماماً
+        }
+
         function nextWave(isFirst = false) {
             const quote = document.getElementById('quote');
-            const emoji = document.getElementById('emoji');
+            const curtain = document.getElementById('fade-overlay');
             
-            if(!isFirst) quote.className = 'slide-out';
+            if(!isFirst) {
+                quote.className = 'slide-out';
+                curtain.style.opacity = "0.5";
+            }
 
             setTimeout(() => {
+                stopOldPlayer(); // إيقاف أي صوت شغال حالياً قبل البدء بالجديد
+
                 const nextPId = activeP === 1 ? "player1" : "player2";
                 const nextLId = activeP === 1 ? "layer1" : "layer2";
                 const otherLId = activeP === 1 ? "layer2" : "layer1";
@@ -172,18 +160,24 @@
                 document.getElementById(nextLId).classList.add('active-video');
                 document.getElementById(otherLId).classList.remove('active-video');
 
-                // تحديث المحتوى
                 const randomComp = compliments[Math.floor(Math.random() * compliments.length)];
                 quote.innerText = randomComp.t;
-                emoji.innerText = randomComp.e;
+                document.getElementById('emoji').innerText = randomComp.e;
                 quote.style.color = colors[Math.floor(Math.random() * colors.length)];
 
-                // تفعيل أنيميشن الدخول
                 quote.className = 'slide-in';
+                curtain.style.opacity = "0";
 
                 vIdx = (vIdx + 1) % vids.length;
                 activeP = activeP === 1 ? 2 : 1;
-            }, isFirst ? 0 : 600);
+            }, isFirst ? 0 : 500);
+        }
+
+        function goBack() {
+            document.getElementById('player1').src = "";
+            document.getElementById('player2').src = "";
+            document.getElementById('ui-layer').style.display = 'none';
+            document.getElementById('splash').style.display = 'flex';
         }
     </script>
 </body>
