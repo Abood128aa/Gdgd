@@ -6,111 +6,48 @@
     <title>Ghadoush Universe ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@900&family=Tajawal:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --neon: #ff0055;
-            --neon-glow: rgba(255, 0, 85, 0.6);
-            --card-bg: rgba(10, 10, 10, 0.95);
-        }
-
+        :root { --neon: #ff0055; --neon-glow: rgba(255, 0, 85, 0.6); --card-bg: rgba(10, 10, 10, 0.95); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { height: 100%; width: 100%; font-family: 'Tajawal', sans-serif; background: #000; overflow: hidden; color: white; }
-
-        /* حاوية الفيديو */
-        #video-bg-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none; opacity: 0.6;
-        }
-        #video-bg-container iframe { width: 100vw; height: 100vh; transform: scale(1.6); pointer-events: none; }
-
-        /* طبقة الانتقال (ستارة سوداء) */
-        #transition-overlay {
-            position: fixed; inset: 0; background: #000; z-index: 1500;
-            opacity: 0; pointer-events: none; transition: opacity 1.2s ease-in-out;
-        }
-
-        .top-bar {
-            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-            width: 85%; height: 8px; background: rgba(255,255,255,0.05);
-            border-radius: 20px; z-index: 1000;
-        }
-        #progress-line { height: 100%; width: 0%; background: var(--neon); box-shadow: 0 0 15px var(--neon); transition: width 1s ease; }
-
-        #welcome-screen {
-            position: fixed; inset: 0; z-index: 2000;
-            background: radial-gradient(circle, #1a1a1a, #000);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
-        }
-
-        .profile-img-btn {
-            width: 200px; height: 200px; border-radius: 50%;
-            border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon-glow);
-            cursor: pointer; transition: 0.4s; object-fit: cover; margin-bottom: 25px;
-        }
-
-        .overlay-content {
-            position: relative; z-index: 100; height: 100vh;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;
-        }
-
-        .neon-card {
-            background: var(--card-bg); border: 2px solid var(--neon);
-            box-shadow: 0 0 40px var(--neon-glow); border-radius: 35px;
-            padding: 40px 25px; width: 95%; max-width: 450px; text-align: center;
-            backdrop-filter: blur(20px); transition: transform 1.2s ease;
-        }
-
-        #dynamic-quote { font-size: 1.8rem; font-weight: 900; margin-bottom: 30px; min-height: 80px; }
-
-        .btn-neon {
-            background: var(--neon); color: white; border: none; padding: 18px;
-            border-radius: 50px; font-size: 1.5rem; font-family: 'Lalezar';
-            cursor: pointer; width: 100%; box-shadow: 0 8px 20px var(--neon-glow);
-            margin-bottom: 12px; display: block; text-decoration: none; transition: 0.3s;
-        }
-
-        .btn-back { background: transparent; border: 1px solid #444; color: #888; font-size: 1rem; padding: 12px; }
-
-        .heart-pop { position: absolute; pointer-events: none; animation: fly 1.5s ease-out forwards; }
-        @keyframes fly { 0% { transform: scale(0); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; } }
+        #video-bg-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0.6; overflow: hidden; }
+        #video-bg-container iframe { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; transform: translate(-50%, -50%) scale(1.8); pointer-events: none; }
+        #transition-overlay { position: fixed; inset: 0; background: #000; z-index: 1500; opacity: 0; pointer-events: none; transition: opacity 1s ease-in-out; }
+        #welcome-screen { position: fixed; inset: 0; z-index: 2000; background: radial-gradient(circle, #1a1a1a, #000); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: transform 1s cubic-bezier(0.85, 0, 0.15, 1); }
+        .profile-img-btn { width: 180px; height: 180px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon-glow); cursor: pointer; object-fit: cover; margin-bottom: 25px; }
+        .overlay-content { position: relative; z-index: 100; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .neon-card { background: var(--card-bg); border: 2px solid var(--neon); box-shadow: 0 0 40px var(--neon-glow); border-radius: 35px; padding: 30px 20px; width: 95%; max-width: 400px; text-align: center; backdrop-filter: blur(20px); }
+        #dynamic-quote { font-size: 1.6rem; font-weight: 900; margin-bottom: 25px; min-height: 70px; }
+        .btn-neon { background: var(--neon); color: white; border: none; padding: 16px; border-radius: 50px; font-size: 1.4rem; font-family: 'Lalezar'; cursor: pointer; width: 100%; box-shadow: 0 8px 20px var(--neon-glow); margin-bottom: 12px; display: block; text-decoration: none; transition: 0.3s; }
+        .btn-back { background: transparent; border: 1px solid #444; color: #888; font-size: 0.9rem; padding: 10px; }
     </style>
 </head>
 <body>
 
     <div id="transition-overlay"></div>
 
-    <div class="top-bar"><div id="progress-line"></div></div>
-
     <div id="welcome-screen">
         <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="profile-img-btn" onclick="initExperience()">
-        <button class="btn-neon" style="width: auto; padding: 15px 40px;" onclick="initExperience()">ابدئي التجربة ✨</button>
+        <button class="btn-neon" style="width: auto; padding: 12px 35px;" onclick="initExperience()">دخول عالم غدوش ✨</button>
     </div>
 
     <div id="video-bg-container">
-        <iframe id="cinema-engine" src="" frameborder="0" allow="autoplay; fullscreen"></iframe>
+        <iframe id="cinema-engine" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
     </div>
 
     <div class="overlay-content" id="ui-layer" style="display: none;">
         <div class="neon-card" id="main-card">
             <div id="dynamic-quote"></div>
             <button class="btn-neon" onclick="refreshContent()">إعادة يا غدوش 🔄</button>
-            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn-neon" style="background: #1877f2; font-size: 1.1rem; box-shadow: none;">👤 الفيسبوك</a>
+            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn-neon" style="background: #1877f2; font-size: 1rem; box-shadow: none;">👤 بروفايل فيسبوك</a>
             <button class="btn-neon btn-back" onclick="goBack()">🔙 عودة</button>
-            <div style="color:#555; margin-top:10px; font-size:12px">LEVEL: <span id="lvl-text" style="color:var(--neon)">1</span></div>
         </div>
     </div>
 
     <script>
-        let waveCount = 0;
         let vIndex = 0;
+        // تم تحديث الروابط لتكون أكثر توافقاً
         const vids = ["2u533q", "70ymh0"]; 
-        const quotes = [
-            "أنتِ النور الذي يضيء أيامي يا غدوش ✨",
-            "غدوش.. جمالكِ ليس له مثيل 💖",
-            "ابتسامتكِ هي سر السعادة هنا 👑",
-            "كل ثانية معكِ هي حكاية جميلة ✨",
-            "أنتِ الأميرة يا غدوش 🦋"
-        ];
+        const quotes = ["أنتِ النور يا غدوش ✨", "جمالكِ ليس له مثيل 💖", "ابتسامتكِ سر السعادة 👑", "كل ثانية معكِ حكاية ✨"];
 
         function initExperience() {
             document.getElementById('welcome-screen').style.transform = "translateY(-100%)";
@@ -120,55 +57,25 @@
 
         function refreshContent() {
             const overlay = document.getElementById('transition-overlay');
-            
-            // 1. إظهار الستارة السوداء (تغطية الشاشة)
             overlay.style.opacity = "1";
-            overlay.style.pointerEvents = "all";
 
             setTimeout(() => {
-                // 2. التغيير يحدث في الخفاء
-                waveCount++;
-                document.getElementById('progress-line').style.width = Math.min(waveCount * 15, 100) + "%";
-                document.getElementById('lvl-text').innerText = waveCount;
-
                 const engine = document.getElementById('cinema-engine');
-                engine.src = `https://streamable.com/e/${vids[vIndex]}?autoplay=1&nocontrols=1`;
+                // إضافة muted=1 ضرورية جداً لتعمل الفيديوهات تلقائياً عند الطرف الآخر
+                engine.src = `https://streamable.com/e/${vids[vIndex]}?autoplay=1&muted=1&nocontrols=1`;
                 vIndex = (vIndex + 1) % vids.length;
 
-                const text = document.getElementById('dynamic-quote');
-                text.innerText = quotes[Math.floor(Math.random() * quotes.length)];
-                text.style.color = `hsl(${Math.random()*20 + 340}, 100%, 80%)`;
-
-                // 3. تلاشي الستارة السوداء ببطء للكشف عن المحتوى الجديد
+                document.getElementById('dynamic-quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+                
                 setTimeout(() => {
                     overlay.style.opacity = "0";
-                    overlay.style.pointerEvents = "none";
-                    for(let i=0; i<15; i++) spawnHeart();
-                }, 800); 
-
+                }, 800);
             }, 1000); 
         }
 
         function goBack() {
-            const overlay = document.getElementById('transition-overlay');
-            overlay.style.opacity = "1";
-            setTimeout(() => {
-                document.getElementById('welcome-screen').style.transform = "translateY(0)";
-                document.getElementById('cinema-engine').src = "";
-                overlay.style.opacity = "0";
-            }, 800);
-        }
-
-        function spawnHeart() {
-            const h = document.createElement('div');
-            h.className = 'heart-pop';
-            h.innerHTML = ['❤️','✨','💖'][Math.floor(Math.random()*3)];
-            h.style.left = "50%"; h.style.top = "50%";
-            h.style.setProperty('--tx', (Math.random()-0.5)*800 + "px");
-            h.style.setProperty('--ty', (Math.random()-0.5)*800 + "px");
-            h.style.fontSize = Math.random()*30 + 20 + "px";
-            document.body.appendChild(h);
-            setTimeout(() => h.remove(), 1500);
+            document.getElementById('welcome-screen').style.transform = "translateY(0)";
+            document.getElementById('cinema-engine').src = "";
         }
     </script>
 </body>
