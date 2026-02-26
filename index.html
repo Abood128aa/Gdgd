@@ -2,12 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ghadoush Universe ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --neon: #ff0055; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --neon: #ff0055; --fb: #1877f2; --insta: #e4405f; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body, html { 
             height: 100%; width: 100%; 
@@ -15,220 +16,271 @@
             overflow: hidden; font-family: 'Cairo', sans-serif; 
         }
 
+        #fade-overlay {
+            position: fixed; inset: 0; background: black; z-index: 9999;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+
         #main-bg {
-            position: fixed; inset: 0;
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: cover;
-            opacity: 0.9; 
-            z-index: 1;
-            transition: background-image 1s ease-in-out;
-            animation: moveZoom 12s infinite alternate ease-in-out;
+            position: fixed; inset: 0; z-index: 1;
+            background-repeat: no-repeat; background-position: center center; background-size: cover;
+            transition: background-image 1.2s ease-in-out;
+            animation: slowZoom 25s infinite alternate ease-in-out;
         }
+        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
-        @keyframes moveZoom {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.2); }
-        }
-
-        /* شاشة البداية */
         #splash { 
-            position: fixed; inset: 0; z-index: 2000; 
-            background: rgba(0, 0, 0, 0.4); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            transition: opacity 0.8s;
+            position: fixed; inset: 0; z-index: 5000; 
+            background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            overflow: hidden;
         }
 
-        /* نمط القلوب المتساقطة */
-        .heart {
-            position: absolute;
-            color: var(--neon);
-            font-size: 20px;
-            user-select: none;
-            pointer-events: none;
-            z-index: 2001;
-            animation: fall linear forwards;
+        /* حاوية الصورة مع النبض */
+        .img-container {
+            position: relative;
+            z-index: 5002;
+            animation: imgPulse 2s infinite ease-in-out;
+            margin-bottom: 25px;
         }
 
-        @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-        }
-
-        .splash-img {
-            width: 180px; height: 180px;
-            border-radius: 50%; 
-            border: 4px solid var(--neon);
-            margin-bottom: 30px; 
+        .splash-img { 
+            width: 160px; height: 160px; border-radius: 50%; 
+            border: 4px solid var(--neon); object-fit: cover;
             box-shadow: 0 0 30px var(--neon);
-            object-fit: cover;
-            z-index: 2002;
         }
 
-        .video-container {
-            position: fixed; inset: 0; z-index: 2;
-            opacity: 0; transition: opacity 1s;
-            overflow: hidden; pointer-events: none;
+        @keyframes imgPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--neon)); }
+            50% { transform: scale(1.08); filter: drop-shadow(0 0 25px var(--neon)); }
         }
-        .active-video { opacity: 0.4; z-index: 3; }
-        
-        iframe { 
-            width: 170vw; height: 170vh; 
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            border: none; 
+
+        /* قلوب شاشة الترحيب الخلفية */
+        .splash-heart {
+            position: absolute; color: rgba(255, 0, 85, 0.3);
+            font-size: 20px; pointer-events: none;
+            animation: floatUp 4s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
 
         #ui-layer { 
-            position: relative; z-index: 1000; height: 100vh;
-            display: none; flex-direction: column; justify-content: center; align-items: center; 
+            position: absolute; inset: 0; z-index: 1000; 
+            display: none; flex-direction: column; justify-content: flex-end; align-items: center; 
+            padding-bottom: 5vh;
         }
 
-        .neon-card {
-            background: rgba(0, 0, 0, 0.2); 
-            backdrop-filter: blur(8px);
-            border: 2px solid var(--neon);
-            padding: 25px 20px; border-radius: 40px;
-            text-align: center; width: 90%; max-width: 420px;
+        .neon-card { 
+            background: rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(25px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            padding: 25px 20px; border-radius: 40px; 
+            text-align: center; width: 92%; max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         #quote { 
             font-size: 1.8rem; font-weight: 900; 
-            text-shadow: 2px 2px 10px #000, -2px -2px 10px #000;
+            font-family: 'Lalezar', cursive;
+            text-shadow: 0 0 15px var(--neon);
+            display: block; min-height: 160px; 
+            color: #fff; line-height: 1.4; margin-bottom: 15px;
         }
 
-        .btn {
-            background: var(--neon); color: white; border: none; padding: 15px; 
-            border-radius: 50px; font-family: 'Lalezar'; font-size: 1.4rem; 
-            cursor: pointer; width: 100%; display: block;
-            text-decoration: none; box-shadow: 0 8px 20px rgba(255, 0, 85, 0.5);
-            transition: 0.3s; margin-top: 12px;
-            z-index: 2002;
-        }
-        .btn:active { transform: scale(0.95); }
-
-        .btn-fb { background: #1877f2; font-size: 1.1rem; }
-        .btn-insta { 
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
-            font-size: 1.1rem; 
-        }
+        .btn { border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .social-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
+        .btn-social { height: 40px; flex: 1; border-radius: 12px; font-size: 1rem; color: white; text-decoration: none; }
+        .btn-fb { background: var(--fb); }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         
-        .btn-back { background: rgba(0,0,0,0.4); border: 1px solid #666; color: #fff; font-size: 0.9rem; margin-top: 15px; border-radius: 50px; cursor: pointer; padding: 8px 20px; }
+        .btn-magic { 
+            width: 100%; background: #fff; color: #000; height: 55px; font-size: 1.3rem; 
+            border-radius: 15px; font-weight: 900; box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            position: relative; z-index: 5005;
+        }
+
+        #beating-heart {
+            font-size: 45px; color: var(--neon); cursor: pointer;
+            animation: heartBeat 1.4s infinite; display: inline-block; margin-top: 10px;
+        }
+        @keyframes heartBeat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.25); } }
+
+        .btn-back { margin-top: 15px; background: none; color: rgba(255,255,255,0.4); font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+        .video-container { position: fixed; inset: 0; z-index: 2; opacity: 0; transition: opacity 1s; overflow: hidden; pointer-events: none; }
+        .active-video { opacity: 0.5; z-index: 3; }
+        iframe { width: 180vw; height: 180vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; }
+
+        /* تساقط القلوب العام */
+        .falling-heart {
+            position: fixed; top: -10%; color: var(--neon);
+            font-size: 20px; z-index: 8000; pointer-events: none;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .inner-heart { position: absolute; pointer-events: none; color: var(--neon); z-index: 2000; animation: heartFly 1.2s forwards; }
+        @keyframes heartFly { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
+
+        .hide-card { opacity: 0 !important; transform: translateY(30px); pointer-events: none; }
     </style>
 </head>
-<body>
+<body onmousedown="hideUI()" onmouseup="showUI()" ontouchstart="hideUI()" ontouchend="showUI()">
 
+    <div id="fade-overlay"></div>
     <div id="main-bg"></div>
 
     <div id="splash">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="splash-img">
-        <button class="btn" style="width:280px;" onclick="init()">دخول عالم غدوش ✨</button>
+        <script>
+            for(let i=0; i<15; i++) {
+                const h = document.createElement('div');
+                h.className = 'splash-heart';
+                h.innerHTML = '❤️';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.animationDelay = Math.random() * 4 + 's';
+                h.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                document.currentScript.parentNode.appendChild(h);
+            }
+        </script>
+        
+        <div class="img-container">
+            <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="splash-img">
+        </div>
+        
+        <button class="btn btn-magic" style="width:260px; background: var(--neon); color: white;" onclick="init(event)">دخول كون غدوش ✨</button>
     </div>
 
-    <div id="layer1" class="video-container"><iframe id="player1" src="" allow="autoplay"></iframe></div>
-    <div id="layer2" class="video-container"><iframe id="player2" src="" allow="autoplay"></iframe></div>
+    <div id="layer1" class="video-container"><iframe id="player1"></iframe></div>
+    <div id="layer2" class="video-container"><iframe id="player2"></iframe></div>
 
     <div id="ui-layer">
-        <div class="neon-card" id="card">
-            <div id="text-box" style="min-height: 130px; display: flex; flex-direction: column; justify-content: center;">
-                <span id="quote"></span>
-                <span style="font-size: 2.5rem; display: block; margin-top: 5px; filter: drop-shadow(0 0 10px black);">👑</span>
+        <div class="neon-card" id="mainCard" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
+            <div id="text-box"><span id="quote"></span></div>
+            
+            <div class="social-row">
+                <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-social btn-fb"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/hwrny823?igsh=MWhjM3cwbzd6ZmhjbA==" target="_blank" class="btn btn-social btn-insta"><i class="fab fa-instagram"></i></a>
+                <button class="btn btn-social" style="background: rgba(255,255,255,0.1);" onclick="shareSite(event)"><i class="fas fa-share-alt"></i></button>
             </div>
-            
-            <button class="btn" onclick="nextWave()">تغيير السحر 🔄</button>
-            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-fb">👤 فيسبوك غدوش</a>
-            <a href="https://www.instagram.com/hwrny823?igsh=MWhjM3cwbzd6ZmhjbA==" target="_blank" class="btn btn-insta">📸 إنستغرام غدوش</a>
-            
-            <center><button class="btn-back" onclick="location.reload()">🔙 رجوع</button></center>
+
+            <button class="btn btn-magic" onclick="nextWave(event)">سحر جديد 🪄</button>
+
+            <center><div id="beating-heart" onclick="spawnHearts(event)">❤️</div></center>
+            <button class="btn btn-back" onclick="location.reload()">إعادة البداية</button>
         </div>
     </div>
 
     <script>
-        const bgImages = [
-            "https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg", 
-            "https://i.ibb.co/FL93N2BX/7ee93916775239f03813755ed461cc83.jpg"
+        const compliments = [
+            "غدوش.. أنتِ لستِ مجرد وجه جميل، أنتِ قصيدة كتبها القمر ونثرتها النجوم على الأرض ✨",
+            "في عيونكِ يغرق الكلام، وفي حضوركِ يصمت الجمال خجلاً من رقتكِ العظيمة يا ملكة الكون 👑",
+            "لو كان للجمال عنوان لكان اسمكِ، ولو كان للسحر موطن لكان بين تفاصيل ملامحكِ الفاتنة 🐚",
+            "أنتِ النادرة التي لا تتكرر، كأنكِ خُلقتِ من خيوط الشمس ومن نقاء الغيم الأبيض ☁️",
+            "حين تبتسمين، يزهر الورد في غير أوانه، ويتنفس العالم عطراً يشبه براءة قلبكِ النقي 🌹",
+            "يا جميلة الروح والطلة، حضوركِ يطغى على كل الأضواء، وكأنكِ الشمس والآخرون كواكب تدور حولكِ ☀️",
+            "غدوش.. أنتِ الاستثناء الوحيد في هذا العالم، فجمالكِ يفوق الخيال وسحركِ لا يدركه وصف 💎",
+            "جمالكِ يا غدوش هو الفن الحقيقي، كلوحة رسمتها يد القدر لتبهر كل من ينظر إليها 🎨",
+            "أنتِ النبض الذي يحيي الأمل، والوجه الذي يبث السكينة في القلوب المتعبة، أنتِ ببساطة معجزة ❤️",
+            "يا قمر الليالي المظلمة، نوركِ يضيء الروح قبل الدروب، وضحكتكِ هي لحن السعادة الأجمل 🎶"
         ];
-        
+
+        const neonColors = ["#ff0055", "#00ffcc", "#fffb00", "#00ff00", "#ff00ff", "#50b7f5", "#ff8800"];
+        const bgImages = ["https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg", "https://i.ibb.co/FL93N2BX/7ee93916775239f03813755ed461cc83.jpg"];
         const vids = ["2u533q", "70ymh0"];
-        const colors = ["#00ffcc", "#ff0055", "#fffb00", "#ff00ff", "#50b7f5", "#00ff00", "#ff8800"];
-        const compliments = ["غدوش.. جمالكِ يدرس للأجيال ✨", "حضوركِ يطغى على ضوء القمر 🌙", "رقتكِ تضاهي رقة الورد 🌹", "أنتِ القصيدة التي عجز الشعراء عنها ✒️", "يا لؤلؤة نادرة تلمع في القلب 🐚", "خُلقتِ لتكوني ملكة 👑"];
+        let vIdx = 0, imgIdx = 0, activeP = 1, isTyping = false;
 
-        let vIdx = 0; 
-        let imgIdx = 0; 
-        let activeP = 1; 
-        let isTyping = false;
-        let heartInterval;
+        function hideUI() { document.getElementById('mainCard').classList.add('hide-card'); }
+        function showUI() { document.getElementById('mainCard').classList.remove('hide-card'); }
 
-        // وظيفة إنشاء القلوب المتساقطة
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
-            heart.style.opacity = Math.random();
-            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
-            
-            document.getElementById('splash').appendChild(heart);
-            
-            setTimeout(() => {
-                heart.remove();
-            }, 5000);
+        function rainHearts() {
+            for(let i=0; i<30; i++) {
+                setTimeout(() => {
+                    const h = document.createElement('div');
+                    h.className = 'falling-heart';
+                    h.innerHTML = '❤️';
+                    h.style.left = Math.random() * 100 + 'vw';
+                    h.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    h.style.color = neonColors[Math.floor(Math.random() * neonColors.length)];
+                    document.body.appendChild(h);
+                    setTimeout(() => h.remove(), 4000);
+                }, i * 50);
+            }
         }
 
-        window.onload = () => {
-            document.getElementById('main-bg').style.backgroundImage = `url('${bgImages[0]}')`;
-            // البدء في تساقط القلوب كل 300 مللي ثانية
-            heartInterval = setInterval(createHeart, 300);
-        };
+        function spawnHearts(e) {
+            e.stopPropagation();
+            for(let i=0; i<12; i++) {
+                const h = document.createElement('div');
+                h.className = 'inner-heart'; h.innerHTML = '❤️';
+                h.style.left = '25px'; h.style.top = '10px';
+                h.style.setProperty('--x', (Math.random()-0.5)*400 + 'px');
+                h.style.setProperty('--y', (Math.random()-0.5)*400 - 150 + 'px');
+                e.currentTarget.appendChild(h);
+                setTimeout(() => h.remove(), 1200);
+            }
+        }
 
-        function init() {
-            clearInterval(heartInterval); // إيقاف إنتاج القلوب عند الدخول
+        function init(e) {
+            e.stopPropagation();
+            document.getElementById('splash').style.transition = '0.8s';
             document.getElementById('splash').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('splash').style.display = 'none';
                 document.getElementById('ui-layer').style.display = 'flex';
-                nextWave(true);
+                nextWave();
             }, 800);
         }
 
-        function typeWriter(text, i) {
-            if (i < text.length) {
-                document.getElementById("quote").innerHTML += text.charAt(i);
-                setTimeout(() => typeWriter(text, i + 1), 50);
-            } else { isTyping = false; }
-        }
-
-        function nextWave(isFirst = false) {
+        function nextWave(e) {
+            if(e) e.stopPropagation();
             if(isTyping) return;
-            document.getElementById("quote").innerHTML = "";
-            isTyping = true;
+            
+            rainHearts();
 
-            if (!isFirst) {
+            const overlay = document.getElementById('fade-overlay');
+            overlay.style.opacity = '0.7';
+            setTimeout(() => {
+                const clr = neonColors[Math.floor(Math.random()*neonColors.length)];
+                document.documentElement.style.setProperty('--neon', clr);
+                document.getElementById("quote").innerHTML = "";
+                document.getElementById("quote").style.color = clr;
+                
                 imgIdx = (imgIdx + 1) % bgImages.length;
                 document.getElementById('main-bg').style.backgroundImage = `url('${bgImages[imgIdx]}')`;
-            }
+                
+                const nP = activeP === 1 ? "player1" : "player2";
+                const nL = activeP === 1 ? "layer1" : "layer2";
+                const oL = activeP === 1 ? "layer2" : "layer1";
+                
+                document.getElementById(nP).src = `https://streamable.com/e/${vids[vIdx]}?autoplay=1&nocontrols=1`;
+                document.getElementById(nL).classList.add('active-video');
+                document.getElementById(oL).classList.remove('active-video');
+                
+                overlay.style.opacity = '0';
+                startTyping();
+                vIdx = (vIdx + 1) % vids.length; activeP = activeP === 1 ? 2 : 1;
+            }, 400);
+        }
 
-            setTimeout(() => {
-                const oldP = activeP === 1 ? "player2" : "player1";
-                document.getElementById(oldP).src = "";
-                const nextP = activeP === 1 ? "player1" : "player2";
-                const nextL = activeP === 1 ? "layer1" : "layer2";
-                const otherL = activeP === 1 ? "layer2" : "layer1";
+        function startTyping() {
+            isTyping = true;
+            const text = compliments[Math.floor(Math.random()*compliments.length)];
+            let i = 0;
+            const inv = setInterval(() => {
+                if(i < text.length) { document.getElementById("quote").innerHTML += text[i++]; }
+                else { clearInterval(inv); isTyping = false; }
+            }, 50);
+        }
 
-                document.getElementById(nextP).src = `https://streamable.com/e/${vids[vIdx]}?autoplay=1&nocontrols=1`;
-                document.getElementById(nextL).classList.add('active-video');
-                document.getElementById(otherL).classList.remove('active-video');
-
-                const randomText = compliments[Math.floor(Math.random() * compliments.length)];
-                document.getElementById("quote").style.color = colors[Math.floor(Math.random() * colors.length)];
-                typeWriter(randomText, 0);
-
-                vIdx = (vIdx + 1) % vids.length;
-                activeP = activeP === 1 ? 2 : 1;
-            }, isFirst ? 0 : 300);
+        async function shareSite(e) {
+            e.stopPropagation();
+            if (navigator.share) await navigator.share({ title: 'Ghadoush', url: window.location.href });
         }
     </script>
 </body>
