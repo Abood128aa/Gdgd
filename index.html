@@ -4,83 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>عالم غدوش ✨</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon: #ff0055; --bg: #0a0a0a; }
+        :root { --neon: #ff0055; --bg: #000; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { height: 100%; width: 100%; background: var(--bg); color: white; overflow: hidden; font-family: 'Tajawal', sans-serif; }
+        body, html { height: 100%; width: 100%; background: var(--bg); color: white; overflow: hidden; font-family: 'Cairo', sans-serif; }
 
-        /* حاوية الفيديو */
-        #video-container { position: fixed; inset: 0; z-index: 1; opacity: 0; transition: opacity 2s ease-in-out; }
-        iframe { width: 100vw; height: 100vh; transform: scale(1.7); pointer-events: none; }
+        /* حاوية الفيديو - جعلناها بخلفية ثابتة لضمان عدم اختفاء الأزرار */
+        #video-bg { position: fixed; inset: 0; z-index: 1; opacity: 0.5; background: #000; }
+        iframe { width: 100%; height: 100%; transform: scale(1.7); pointer-events: none; }
 
-        /* شاشة الترحيب */
-        #loader { position: fixed; inset: 0; z-index: 2000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 1.5s ease-in-out; }
-        .ghadoush-img { width: 180px; height: 180px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); margin-bottom: 30px; cursor: pointer; }
+        /* الشاشة الافتتاحية */
+        #splash { position: fixed; inset: 0; z-index: 2000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .avatar { width: 180px; height: 180px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); margin-bottom: 25px; }
 
-        /* واجهة التحكم النيون */
-        .ui-layer { position: relative; z-index: 100; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.4); opacity: 0; transition: 2s ease-in-out; }
-        .card { background: rgba(20, 20, 20, 0.9); border: 2px solid var(--neon); padding: 30px; border-radius: 40px; text-align: center; box-shadow: 0 0 50px rgba(255, 0, 85, 0.3); width: 90%; max-width: 400px; }
+        /* واجهة الأزرار - ثابتة ولا تختفي */
+        .main-ui { position: relative; z-index: 100; height: 100vh; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .neon-box { background: rgba(20, 20, 20, 0.95); border: 2px solid var(--neon); padding: 30px 20px; border-radius: 35px; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 85, 0.4); width: 90%; max-width: 400px; }
         
-        .btn-main { background: var(--neon); color: white; border: none; padding: 15px 40px; border-radius: 50px; font-family: 'Lalezar'; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 0, 85, 0.4); transition: 0.3s; width: 100%; margin-top: 20px; }
-        .btn-main:active { transform: scale(0.95); }
+        .btn { background: var(--neon); color: white; border: none; padding: 16px; border-radius: 50px; font-family: 'Lalezar'; font-size: 1.5rem; cursor: pointer; width: 100%; margin-bottom: 15px; display: block; text-decoration: none; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.3); transition: 0.3s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-alt { background: transparent; border: 1px solid #444; color: #888; font-size: 1rem; }
 
-        /* طبقة التلاشي عند التبديل */
-        #fade-overlay { position: fixed; inset: 0; background: black; z-index: 1500; opacity: 0; pointer-events: none; transition: 1.5s ease-in-out; }
+        /* شاشة التلاشي الانتقالي */
+        #fade { position: fixed; inset: 0; background: #000; z-index: 1500; opacity: 0; pointer-events: none; transition: 1.2s; }
     </style>
 </head>
 <body>
 
-    <div id="fade-overlay"></div>
+    <div id="fade"></div>
 
-    <div id="loader">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="ghadoush-img" onclick="start()">
-        <button class="btn-main" style="width: auto;" onclick="start()">دخول العالم ✨</button>
+    <div id="splash">
+        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="avatar">
+        <button class="btn" style="width: auto; padding: 10px 40px;" onclick="unlock()">ابدئي الآن 🔊</button>
+        <p style="color: #444; margin-top: 10px; font-size: 12px;">اضغطي لتفعيل الصوت والفيديو</p>
     </div>
 
-    <div id="video-container">
-        <iframe id="player" src="" frameborder="0" allow="autoplay; fullscreen"></iframe>
+    <div id="video-bg">
+        <iframe id="vid-frame" src="" frameborder="0" allow="autoplay; fullscreen"></iframe>
     </div>
 
-    <div class="ui-layer" id="ui">
-        <div class="card">
-            <h1 id="quote" style="margin-bottom: 20px; font-size: 1.8rem;">أنتِ الأميرة يا غدوش 👑</h1>
-            <button class="btn-main" onclick="changeContent()">إعادة يا غدوش 🔄</button>
-            <p style="margin-top: 20px; color: #666; font-size: 0.8rem;">تم تحسين الصوت والتبديل البطيء</p>
+    <div class="main-ui" id="ui">
+        <div class="neon-box">
+            <h2 id="msg" style="margin-bottom: 25px; min-height: 60px;">أنتِ الأميرة يا غدوش 👑</h2>
+            <button class="btn" onclick="next()">إعادة (تبديل ببطء) 🔄</button>
+            <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn" style="background: #1877f2;">👤 فيسبوك</a>
+            <button class="btn btn-alt" onclick="location.reload()">🔙 عودة</button>
         </div>
     </div>
 
     <script>
-        const vids = ["2u533q", "70ymh0"];
-        const quotes = ["جمالكِ يضيء الكون ✨", "أنتِ النجمة يا غدوش 🌟", "ابتسامتكِ هي السر 💖"];
-        let currentIdx = 0;
+        const vList = ["2u533q", "70ymh0"];
+        const mList = ["جمالكِ يضيء المكان ✨", "أنتِ النجمة يا غدوش 🌟", "ابتسامتكِ هي السر 💖", "كل ثانية معكِ حكاية 🦋"];
+        let idx = 0;
 
-        function start() {
-            document.getElementById('loader').style.opacity = "0";
-            setTimeout(() => {
-                document.getElementById('loader').style.display = "none";
-                document.getElementById('video-container').style.opacity = "0.6";
-                document.getElementById('ui').style.opacity = "1";
-                changeContent();
-            }, 1500);
+        function unlock() {
+            // التفاعل هنا يحل مشكلة الصوت تماماً
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('ui').style.display = 'flex';
+            next();
         }
 
-        function changeContent() {
-            const fade = document.getElementById('fade-overlay');
-            fade.style.opacity = "1";
+        function next() {
+            const f = document.getElementById('fade');
+            f.style.opacity = "1"; // التلاشي يبدأ
 
             setTimeout(() => {
-                const player = document.getElementById('player');
-                // ميزة: الفيديو يبدأ صامت تقنياً ثم يعمل الصوت عند التفاعل
-                player.src = `https://streamable.com/e/${vids[currentIdx]}?autoplay=1&nocontrols=1`;
+                const p = document.getElementById('vid-frame');
+                // نحدث الرابط والرسالة أثناء التعتيم
+                p.src = `https://streamable.com/e/${vList[idx]}?autoplay=1&nocontrols=1`;
+                document.getElementById('msg').innerText = mList[Math.floor(Math.random() * mList.length)];
                 
-                document.getElementById('quote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
-                currentIdx = (currentIdx + 1) % vids.length;
+                idx = (idx + 1) % vList.length;
 
                 setTimeout(() => {
-                    fade.style.opacity = "0";
-                }, 1000);
-            }, 1500);
+                    f.style.opacity = "0"; // نكشف المحتوى الجديد بنعومة
+                }, 800);
+            }, 1000);
         }
     </script>
 </body>
