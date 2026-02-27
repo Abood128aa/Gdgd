@@ -1,10 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ghadoush Universe ✨</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ghadoush">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg">
+    <meta name="theme-color" content="#ff0055">
+    
     <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -149,28 +155,15 @@
     <div id="main-bg"></div>
 
     <div id="splash">
-        <script>
-            for(let i=0; i<25; i++) {
-                const h = document.createElement('div');
-                h.className = 'beating-bg-heart';
-                h.innerHTML = '❤️';
-                h.style.left = Math.random() * 100 + 'vw';
-                h.style.top = Math.random() * 100 + 'vh';
-                h.style.animationDelay = Math.random() * 3 + 's';
-                h.style.fontSize = (Math.random() * 30 + 10) + 'px';
-                document.getElementById('splash').appendChild(h);
-            }
-        </script>
-        
+        <div id="bg-hearts-container"></div>
         <div class="img-wrapper">
             <div class="flower-bg">🌸</div>
             <div class="img-container">
                 <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="splash-img">
             </div>
         </div>
-        
         <button class="btn btn-magic" style="width:300px; background: var(--neon); color: white;" onclick="init(event)">
-           🌸 حہورأنہيہة يہا خہال 🌸
+           🌸 حهورأنہيہة يہا خہال 🌸
         </button>
     </div>
 
@@ -180,15 +173,12 @@
     <div id="ui-layer">
         <div class="neon-card" id="mainCard" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
             <div id="text-box"><span id="quote"></span></div>
-            
             <div class="social-row">
                 <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-social btn-fb"><i class="fab fa-facebook-f"></i></a>
                 <a href="https://www.instagram.com/hwrny823?igsh=MWhjM3cwbzd6ZmhjbA==" target="_blank" class="btn btn-social btn-insta"><i class="fab fa-instagram"></i></a>
                 <button class="btn btn-social" style="background: rgba(255,255,255,0.1);" onclick="shareSite(event)"><i class="fas fa-share-alt"></i></button>
             </div>
-
             <button class="btn btn-magic" onclick="nextWave(event)">سحر جديد 🪄</button>
-
             <center><div id="beating-heart-main" onclick="spawnHearts(event)">❤️</div></center>
             <button class="btn btn-back" onclick="location.reload()">إعادة البداية</button>
         </div>
@@ -213,6 +203,18 @@
         const vids = ["2u533q", "70ymh0"];
         let vIdx = 0, imgIdx = 0, activeP = 1, isTyping = false;
 
+        // إنشاء قلوب الخلفية عند التحميل
+        for(let i=0; i<25; i++) {
+            const h = document.createElement('div');
+            h.className = 'beating-bg-heart';
+            h.innerHTML = '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.top = Math.random() * 100 + 'vh';
+            h.style.animationDelay = Math.random() * 3 + 's';
+            h.style.fontSize = (Math.random() * 30 + 10) + 'px';
+            document.getElementById('bg-hearts-container').appendChild(h);
+        }
+
         function hideUI() { document.getElementById('mainCard').classList.add('hide-card'); }
         function showUI() { document.getElementById('mainCard').classList.remove('hide-card'); }
 
@@ -233,6 +235,7 @@
 
         function spawnHearts(e) {
             e.stopPropagation();
+            if (navigator.vibrate) navigator.vibrate(50); // اهتزاز بسيط
             for(let i=0; i<12; i++) {
                 const h = document.createElement('div');
                 h.className = 'inner-heart'; h.innerHTML = '❤️';
@@ -258,9 +261,9 @@
         function nextWave(e) {
             if(e) e.stopPropagation();
             if(isTyping) return;
-            
-            rainHearts();
+            if (navigator.vibrate) navigator.vibrate(30); // اهتزاز عند الضغط
 
+            rainHearts();
             const overlay = document.getElementById('fade-overlay');
             overlay.style.opacity = '0.7';
             setTimeout(() => {
@@ -268,28 +271,18 @@
                 document.documentElement.style.setProperty('--neon', clr);
                 document.getElementById("quote").innerHTML = "";
                 document.getElementById("quote").style.color = clr;
-                
                 imgIdx = (imgIdx + 1) % bgImages.length;
                 document.getElementById('main-bg').style.backgroundImage = `url('${bgImages[imgIdx]}')`;
-                
-                // تحديد المشغل النشط والمشغل القديم
                 const nP_id = activeP === 1 ? "player1" : "player2";
                 const oP_id = activeP === 1 ? "player2" : "player1";
                 const nL = activeP === 1 ? "layer1" : "layer2";
                 const oL = activeP === 1 ? "layer2" : "layer1";
-                
                 const nP = document.getElementById(nP_id);
                 const oP = document.getElementById(oP_id);
-
-                // إيقاف وتفريغ الفيديو القديم تماماً لمنع تداخل الصوت
                 oP.src = ""; 
-
-                // تشغيل الفيديو الجديد
                 nP.src = `https://streamable.com/e/${vids[vIdx]}?autoplay=1&nocontrols=1`;
-                
                 document.getElementById(nL).classList.add('active-video');
                 document.getElementById(oL).classList.remove('active-video');
-                
                 overlay.style.opacity = '0';
                 startTyping();
                 vIdx = (vIdx + 1) % vids.length; 
