@@ -1,119 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ghadoush Universe ✨</title>
-    
-    <link rel="manifest" href="manifest.json">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Ghadoush">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg">
-    <meta name="theme-color" content="#ff0055">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --neon: #ff0055; --fb: #1877f2; --insta: #e4405f; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body, html { 
-            height: 100%; width: 100%; 
-            background: #000; color: white; 
-            overflow: hidden; font-family: 'Cairo', sans-serif; 
-        }
-
-        #fade-overlay {
-            position: fixed; inset: 0; background: black; z-index: 9999;
-            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
-        }
-
-        #main-bg {
-            position: fixed; inset: 0; z-index: 1;
-            background-repeat: no-repeat; background-position: center center; background-size: cover;
-            transition: background-image 1.2s ease-in-out;
-            animation: slowZoom 25s infinite alternate ease-in-out;
-        }
-        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-
-        #splash { 
-            position: fixed; inset: 0; z-index: 5000; 
-            background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            overflow: hidden;
-        }
-
-        .img-wrapper {
-            position: relative;
-            width: 220px; height: 220px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 30px;
-            z-index: 5002;
-        }
-
-        .flower-bg {
-            position: absolute; inset: 0;
-            font-size: 200px; line-height: 220px; text-align: center;
-            animation: rotateFlower 10s infinite linear;
-            opacity: 0.8; filter: drop-shadow(0 0 10px var(--neon));
-        }
-        @keyframes rotateFlower { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .img-container {
-            position: relative;
-            z-index: 5003;
-            animation: imgPulse 2s infinite ease-in-out;
-        }
-
-        .splash-img { 
-            width: 160px; height: 160px; border-radius: 50%; 
-            border: 4px solid var(--neon); object-fit: cover;
-            box-shadow: 0 0 30px var(--neon);
-        }
-
-        @keyframes imgPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .beating-bg-heart {
-            position: absolute; color: rgba(255, 0, 85, 0.4);
-            pointer-events: none;
-            animation: heartPulseFade 3s infinite ease-in-out;
-            z-index: 5001;
-        }
-        @keyframes heartPulseFade {
-            0%, 100% { transform: scale(1); opacity: 0.2; }
-            50% { transform: scale(1.5); opacity: 0.6; }
-        }
-
-        #ui-layer { 
-            position: absolute; inset: 0; z-index: 1000; 
-            display: none; flex-direction: column; justify-content: flex-end; align-items: center; 
-            padding-bottom: 5vh;
-        }
-
-        .neon-card { 
-            background: rgba(0, 0, 0, 0.6); 
-            backdrop-filter: blur(25px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            padding: 25px 20px; border-radius: 40px; 
-            text-align: center; width: 92%; max-width: 420px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        #quote { 
-            font-size: 1.8rem; font-weight: 900; 
-            font-family: 'Lalezar', cursive;
-            text-shadow: 0 0 15px var(--neon);
-            display: block; min-height: 160px; 
-            color: #fff; line-height: 1.4; margin-bottom: 15px;
-        }
-
-        .btn { border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
-        .social-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
+m: 12px; }
         .btn-social { height: 40px; flex: 1; border-radius: 12px; font-size: 1rem; color: white; text-decoration: none; }
         .btn-fb { background: var(--fb); }
         .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
@@ -288,6 +173,284 @@
                 
                 document.getElementById(nL).classList.add('active-video');
                 document.getElementById(oL).classList.remove('active-video');
+                overlay.style.opacity = '0';
+                startTyping();
+                vIdx = (vIdx + 1) % vids.length; 
+                activeP = activeP === 1 ? 2 : 1;
+            }, 400);
+        }
+
+        function startTyping() {
+            isTyping = true;
+            const text = compliments[Math.floor(Math.random()*compliments.length)];
+            let i = 0;
+            const inv = setInterval(() => {
+                if(i < text.length) { document.getElementById("quote").innerHTML += text[i++]; }
+                else { clearInterval(inv); isTyping = false; }
+            }, 50);
+        }
+
+        async function shareSite(e) {
+            e.stopPropagation();
+            if (navigator.share) await navigator.share({ title: 'Ghadoush', url: window.location.href });
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ghadoush Universe ✨</title>
+    
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ghadoush">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg">
+    <meta name="theme-color" content="#ff0055">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --neon: #ff0055; --fb: #1877f2; --insta: #e4405f; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body, html { 
+            height: 100%; width: 100%; 
+            background: #000; color: white; 
+            overflow: hidden; font-family: 'Cairo', sans-serif; 
+        }
+
+        #fade-overlay {
+            position: fixed; inset: 0; background: black; z-index: 9999;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+
+        #main-bg {
+            position: fixed; inset: 0; z-index: 1;
+            background-repeat: no-repeat; background-position: center center; background-size: cover;
+            transition: background-image 1.2s ease-in-out;
+            animation: slowZoom 25s infinite alternate ease-in-out;
+        }
+        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
+        #splash { 
+            position: fixed; inset: 0; z-index: 5000; 
+            background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            overflow: hidden;
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 220px; height: 220px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 30px;
+            z-index: 5002;
+        }
+
+        .flower-bg {
+            position: absolute; inset: 0;
+            font-size: 200px; line-height: 220px; text-align: center;
+            animation: rotateFlower 10s infinite linear;
+            opacity: 0.8; filter: drop-shadow(0 0 10px var(--neon));
+        }
+        @keyframes rotateFlower { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .img-container {
+            position: relative;
+            z-index: 5003;
+            animation: imgPulse 2s infinite ease-in-out;
+        }
+
+        .splash-img { 
+            width: 160px; height: 160px; border-radius: 50%; 
+            border: 4px solid var(--neon); object-fit: cover;
+            box-shadow: 0 0 30px var(--neon);
+        }
+
+        @keyframes imgPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        #ui-layer { 
+            position: absolute; inset: 0; z-index: 1000; 
+            display: none; flex-direction: column; justify-content: flex-end; align-items: center; 
+            padding-bottom: 5vh;
+        }
+
+        .neon-card { 
+            background: rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(25px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            padding: 25px 20px; border-radius: 40px; 
+            text-align: center; width: 92%; max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        #quote { 
+            font-size: 1.8rem; font-weight: 900; 
+            font-family: 'Lalezar', cursive;
+            text-shadow: 0 0 15px var(--neon);
+            display: block; min-height: 160px; 
+            color: #fff; line-height: 1.4; margin-bottom: 15px;
+        }
+
+        .btn { border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .social-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
+        .btn-social { height: 40px; flex: 1; border-radius: 12px; font-size: 1rem; color: white; text-decoration: none; }
+        .btn-fb { background: var(--fb); }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        
+        .btn-magic { 
+            width: 100%; background: #fff; color: #000; height: 55px; font-size: 1.3rem; 
+            border-radius: 15px; font-weight: 900; box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            position: relative; z-index: 5005;
+        }
+
+        #beating-heart-main {
+            font-size: 45px; color: var(--neon); cursor: pointer;
+            animation: heartBeat 1.4s infinite; display: inline-block; margin-top: 10px;
+        }
+        @keyframes heartBeat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.25); } }
+
+        .video-container { position: fixed; inset: 0; z-index: 2; opacity: 0; transition: opacity 1s; overflow: hidden; pointer-events: none; }
+        .active-video { opacity: 0.5; z-index: 3; }
+        iframe { width: 180vw; height: 180vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; }
+
+        .falling-heart {
+            position: fixed; top: -10%; color: var(--neon);
+            font-size: 20px; z-index: 8000; pointer-events: none;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .inner-heart { position: absolute; pointer-events: none; color: var(--neon); z-index: 2000; animation: heartFly 1.2s forwards; }
+        @keyframes heartFly { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
+
+        .hide-card { opacity: 0 !important; transform: translateY(30px); pointer-events: none; }
+    </style>
+</head>
+<body onmousedown="hideUI()" onmouseup="showUI()" ontouchstart="hideUI()" ontouchend="showUI()">
+
+    <div id="fade-overlay"></div>
+    <div id="main-bg"></div>
+
+    <div id="splash">
+        <div id="bg-hearts-container"></div>
+        <div class="img-wrapper">
+            <div class="flower-bg">🌸</div>
+            <div class="img-container">
+                <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="splash-img">
+            </div>
+        </div>
+        <button class="btn btn-magic" style="width:300px; background: var(--neon); color: white;" onclick="init(event)">
+           🌸 حهورأنہيہة يہا خہال 🌸
+        </button>
+    </div>
+
+    <div id="layer1" class="video-container"><iframe id="player1"></iframe></div>
+    <div id="layer2" class="video-container"><iframe id="player2"></iframe></div>
+
+    <div id="ui-layer">
+        <div class="neon-card" id="mainCard" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
+            <div id="text-box"><span id="quote"></span></div>
+            <div class="social-row">
+                <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-social btn-fb"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/hwrny823?igsh=MWhjM3cwbzd6ZmhjbA==" target="_blank" class="btn btn-social btn-insta"><i class="fab fa-instagram"></i></a>
+                <button class="btn btn-social" style="background: rgba(255,255,255,0.1);" onclick="shareSite(event)"><i class="fas fa-share-alt"></i></button>
+            </div>
+            <button class="btn btn-magic" onclick="nextWave(event)">سحر جديد 🪄</button>
+            <center><div id="beating-heart-main" onclick="spawnHearts(event)">❤️</div></center>
+            <button class="btn btn-back" onclick="location.reload()" style="background:none; border:none; color:gray; margin-top:10px; font-size:12px;">إعادة البداية</button>
+        </div>
+    </div>
+
+    <script>
+        // تفعيل Service Worker لظهور خيار التثبيت
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        const compliments = [
+            "غدوش.. أنتِ لستِ مجرد وجه جميل، أنتِ قصيدة كتبها القمر ✨",
+            "في عيونكِ يغرق الكلام، وفي حضوركِ يصمت الجمال خجلاً 👑",
+            "لو كان للجمال عنوان لكان اسمكِ يا غدوش 🐚",
+            "أنتِ النادرة التي لا تتكرر، كأنكِ خُلقتِ من نقاء الغيم الأبيض ☁️",
+            "حين تبتسمين، يزهر الورد في غير أوانه 🌹",
+            "يا جميلة الروح والطلة، حضوركِ يطغى على كل الأضواء ☀️"
+        ];
+
+        const neonColors = ["#ff0055", "#00ffcc", "#fffb00", "#00ff00", "#ff00ff"];
+        const bgImages = ["https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg", "https://i.ibb.co/FL93N2BX/7ee93916775239f03813755ed461cc83.jpg"];
+        const vids = ["2u533q", "70ymh0"];
+        let vIdx = 0, imgIdx = 0, activeP = 1, isTyping = false;
+
+        function hideUI() { document.getElementById('mainCard').classList.add('hide-card'); }
+        function showUI() { document.getElementById('mainCard').classList.remove('hide-card'); }
+
+        function rainHearts() {
+            for(let i=0; i<30; i++) {
+                setTimeout(() => {
+                    const h = document.createElement('div');
+                    h.className = 'falling-heart'; h.innerHTML = '❤️';
+                    h.style.left = Math.random() * 100 + 'vw';
+                    h.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(h);
+                    setTimeout(() => h.remove(), 4000);
+                }, i * 50);
+            }
+        }
+
+        function spawnHearts(e) {
+            e.stopPropagation();
+            for(let i=0; i<10; i++) {
+                const h = document.createElement('div');
+                h.className = 'inner-heart'; h.innerHTML = '❤️';
+                h.style.left = '25px'; h.style.top = '10px';
+                h.style.setProperty('--x', (Math.random()-0.5)*400 + 'px');
+                h.style.setProperty('--y', (Math.random()-0.5)*400 - 150 + 'px');
+                e.currentTarget.appendChild(h);
+                setTimeout(() => h.remove(), 1200);
+            }
+        }
+
+        function init(e) {
+            e.stopPropagation();
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('splash').style.display = 'none';
+                document.getElementById('ui-layer').style.display = 'flex';
+                nextWave();
+            }, 800);
+        }
+
+        function nextWave(e) {
+            if(e) e.stopPropagation();
+            if(isTyping) return;
+            rainHearts();
+            const overlay = document.getElementById('fade-overlay');
+            overlay.style.opacity = '0.7';
+            setTimeout(() => {
+                const clr = neonColors[Math.floor(Math.random()*neonColors.length)];
+                document.documentElement.style.setProperty('--neon', clr);
+                document.getElementById("quote").innerHTML = "";
+                imgIdx = (imgIdx + 1) % bgImages.length;
+                document.getElementById('main-bg').style.backgroundImage = `url('${bgImages[imgIdx]}')`;
+                
+                const nP_id = activeP === 1 ? "player1" : "player2";
+                const nP = document.getElementById(nP_id);
+                nP.src = `https://streamable.com/e/${vids[vIdx]}?autoplay=1&nocontrols=1&muted=1`;
+                
+                document.getElementById(activeP === 1 ? 'layer1' : 'layer2').classList.add('active-video');
+                document.getElementById(activeP === 1 ? 'layer2' : 'layer1').classList.remove('active-video');
+                
                 overlay.style.opacity = '0';
                 startTyping();
                 vIdx = (vIdx + 1) % vids.length; 
