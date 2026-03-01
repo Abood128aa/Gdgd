@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تحكم غدوش 🚀</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <style>
+        body { background: #000; color: #fff; font-family: sans-serif; padding: 20px; text-align: center; }
+        input, textarea { width: 90%; padding: 10px; margin: 10px; border-radius: 10px; border: 1px solid #ff0055; background: #111; color: #fff; }
+        button { padding: 15px 30px; background: #ff0055; color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .msg { background: #222; padding: 10px; margin: 5px; border-radius: 5px; text-align: right; border-right: 3px solid #ff0055; }
+    </style>
+</head>
+<body>
+    <h2>التحكم في عالم غدوش ✨</h2>
+    <textarea id="t" placeholder="اكتب رسالة تظهر لغدوش الآن..."></textarea>
+    <input id="b" placeholder="رابط صورة خلفية...">
+    <input id="v" placeholder="ID فيديو يوتيوب (مثال: dQw4w9WgXcQ)">
+    <button onclick="send()">تحديث الموقع فوراً 🪄</button>
+
+    <h3 style="margin-top:30px;">رسائل غدوش الواردة:</h3>
+    <div id="list"></div>
+
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyBcbf6AnqVs46gBw2dNjC9TREbx5f4DfJM", authDomain: "ghadoush-app.firebaseapp.com", projectId: "ghadoush-app", databaseURL: "https://ghadoush-app-default-rtdb.firebaseio.com" };
+        firebase.initializeApp(firebaseConfig); const db = firebase.database();
+        function send() { db.ref('live_control').set({ text: document.getElementById('t').value, bg: document.getElementById('b').value, video: document.getElementById('v').value }); alert("تم الإرسال!"); }
+        db.ref('messages').on('child_added', (s) => { const d = s.val(); const div = document.createElement('div'); div.className = 'msg'; div.innerText = d.text; document.getElementById('list').prepend(div); });
+    </script>
+</body>
+</html>
