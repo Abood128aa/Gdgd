@@ -33,8 +33,6 @@
         .img-container { position: relative; z-index: 5003; animation: imgPulse 2s infinite ease-in-out; }
         .splash-img { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--neon); object-fit: cover; box-shadow: 0 0 30px var(--neon); }
         @keyframes imgPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        .beating-bg-heart { position: absolute; color: rgba(255, 0, 85, 0.4); pointer-events: none; animation: heartPulseFade 3s infinite ease-in-out; z-index: 5001; }
-        @keyframes heartPulseFade { 0%, 100% { transform: scale(1); opacity: 0.2; } 50% { transform: scale(1.5); opacity: 0.6; } }
         #ui-layer { position: absolute; inset: 0; z-index: 1000; display: none; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 5vh; }
         .neon-card { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 25px 20px; border-radius: 40px; text-align: center; width: 92%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); transition: 0.4s; }
         #quote { font-size: 1.8rem; font-weight: 900; font-family: 'Lalezar', cursive; text-shadow: 0 0 15px var(--neon); display: block; min-height: 160px; color: #fff; line-height: 1.4; margin-bottom: 15px; }
@@ -47,19 +45,28 @@
         #beating-heart-main { font-size: 45px; color: var(--neon); cursor: pointer; animation: heartBeat 1.4s infinite; display: inline-block; margin-top: 10px; }
         @keyframes heartBeat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.25); } }
         
-        /* زر الرجوع الأصلي */
-        .btn-back { margin-top: 10px; background: none; color: rgba(255,255,255,0.4); font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        /* زر الرجوع */
+        .btn-back { margin-top: 10px; background: none; color: rgba(255,255,255,0.4); font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); width: 100px; margin-inline: auto; }
         
+        /* زر التثبيت الجديد */
+        #pwa-install-btn { display: none; margin-bottom: 15px; background: var(--neon); color: white; border-radius: 12px; padding: 10px; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* صفحة المدير */
+        #admin-panel { display: none; margin-top: 15px; border: 1px dashed #ff0055; padding: 10px; border-radius: 15px; }
+        .btn-reset { background: #ff3333; color: white; padding: 5px 15px; border-radius: 8px; font-size: 0.8rem; margin-top: 5px; }
+
         .video-container { position: fixed; inset: 0; z-index: 2; opacity: 0; transition: opacity 1s; overflow: hidden; pointer-events: none; }
         .active-video { opacity: 0.5; z-index: 3; }
         iframe { width: 180vw; height: 180vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; }
-        .falling-heart { position: fixed; top: -10%; color: var(--neon); font-size: 20px; z-index: 8000; pointer-events: none; animation: fall linear forwards; }
+        
+        /* تأثير تساقط الإيموجيات */
+        .falling-emoji { position: fixed; top: -10%; z-index: 8000; pointer-events: none; animation: fall linear forwards; font-size: 24px; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+
         .inner-heart { position: absolute; pointer-events: none; color: var(--neon); z-index: 2000; animation: heartFly 1.2s forwards; }
         @keyframes heartFly { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
         .hide-card { opacity: 0 !important; transform: translateY(30px); pointer-events: none; }
-        
-        /* العداد */
         #visit-count-ui { margin-top: 10px; font-size: 0.7rem; color: #555; }
     </style>
 </head>
@@ -69,16 +76,6 @@
     <div id="main-bg"></div>
 
     <div id="splash">
-        <script>
-            for(let i=0; i<25; i++) {
-                const h = document.createElement('div');
-                h.className = 'beating-bg-heart'; h.innerHTML = '❤️';
-                h.style.left = Math.random() * 100 + 'vw';
-                h.style.top = Math.random() * 100 + 'vh';
-                h.style.fontSize = (Math.random() * 30 + 10) + 'px';
-                document.getElementById('splash').appendChild(h);
-            }
-        </script>
         <div class="img-wrapper">
             <div class="flower-bg">🌸</div>
             <div class="img-container">
@@ -95,6 +92,9 @@
 
     <div id="ui-layer">
         <div class="neon-card" id="mainCard" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
+            
+            <button id="pwa-install-btn" onclick="installPWA()">تثبيت تطبيق غدوش ✨</button>
+
             <div id="text-box"><span id="quote"></span></div>
             <div class="social-row">
                 <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-social btn-fb"><i class="fab fa-facebook-f"></i></a>
@@ -105,12 +105,16 @@
             
             <div id="visit-count-ui">محبين غدوش: <span id="v-num">0</span></div>
             
+            <div id="admin-panel">
+                <p style="color:var(--neon); font-size:0.8rem;">لوحة التحكم</p>
+                <button class="btn btn-reset" onclick="resetCounter()">تصفير العداد 🔄</button>
+            </div>
+
             <button class="btn btn-back" onclick="resetApp()">إعادة البداية</button>
         </div>
     </div>
 
     <script>
-        // الجمل الـ 10 الأصلية
         const compliments = [
             "غدوش.. أنتِ لستِ مجرد وجه جميل، أنتِ قصيدة كتبها القمر ونثرتها النجوم على الأرض ✨",
             "في عيونكِ يغرق الكلام، وفي حضوركِ يصمت الجمال خجلاً من رقتكِ العظيمة يا ملكة الكون 👑",
@@ -124,19 +128,38 @@
             "يا قمر الليالي المظلمة، نوركِ يضيء الروح قبل الدروب، وضحكتكِ هي لحن السعادة الأجمل 🎶"
         ];
 
+        const emojis = ["❤️", "🌸", "✨", "👑", "🌹", "🦋", "💎"];
         const vids = ["2u533q", "70ymh0"];
-        let vIdx = 0, activeP = 1, isTyping = false;
+        let vIdx = 0, activeP = 1, isTyping = false, deferredPrompt;
 
-        // منطق العداد: يصفر لك أنت فقط (Admin)
+        // ميزة التثبيت
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('pwa-install-btn').style.display = 'block';
+        });
+
+        async function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('pwa-install-btn').style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        }
+
+        // منطق العداد والمدير
         function trackVisits() {
-            // ملاحظة: لتصفير العداد لك، افتح المتصفح من هاتفك واكتب في الرابط: #admin لمرة واحدة
             if (window.location.hash === "#admin") {
                 localStorage.setItem('isAdmin', 'true');
-                localStorage.setItem('g_visits', 0);
+                document.getElementById('admin-panel').style.display = 'block';
             }
 
             if (localStorage.getItem('isAdmin')) {
-                document.getElementById('v-num').innerText = "وضع المطور";
+                document.getElementById('v-num').innerText = localStorage.getItem('g_visits') || 0;
+                document.getElementById('admin-panel').style.display = 'block';
                 return;
             }
 
@@ -144,6 +167,12 @@
             count++;
             localStorage.setItem('g_visits', count);
             document.getElementById('v-num').innerText = count;
+        }
+
+        function resetCounter() {
+            localStorage.setItem('g_visits', 0);
+            document.getElementById('v-num').innerText = 0;
+            alert("تم تصفير العداد بنجاح!");
         }
 
         function hideUI() { document.getElementById('mainCard').classList.add('hide-card'); }
@@ -159,19 +188,32 @@
             }, 800);
         }
 
-        // إصلاح زر الرجوع
         function resetApp() {
             document.getElementById('ui-layer').style.display = 'none';
             document.getElementById('splash').style.display = 'flex';
             document.getElementById('splash').style.opacity = '1';
             document.getElementById('player1').src = "";
             document.getElementById('player2').src = "";
-            document.getElementById('layer1').classList.remove('active-video');
-            document.getElementById('layer2').classList.remove('active-video');
+        }
+
+        // ميزة تساقط الإيموجيات والقلوب بكل ضغطة
+        function rainMagic() {
+            for(let i=0; i<40; i++) {
+                setTimeout(() => {
+                    const e = document.createElement('div');
+                    e.className = 'falling-emoji';
+                    e.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+                    e.style.left = Math.random() * 100 + 'vw';
+                    e.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(e);
+                    setTimeout(() => e.remove(), 4000);
+                }, i * 40);
+            }
         }
 
         function nextWave(e) {
             if(isTyping) return;
+            rainMagic();
             const overlay = document.getElementById('fade-overlay');
             overlay.style.opacity = '0.7';
             setTimeout(() => {
