@@ -5,121 +5,392 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ghadoush Universe ✨</title>
     
-    <link rel="manifest" href="manifest.json">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="غدوش">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg">
     <meta name="theme-color" content="#ff0055">
     
     <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        :root { --neon: #ff0055; }
+        :root { --neon: #ff0055; --fb: #1877f2; --insta: #e4405f; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { height: 100%; width: 100%; background: #000; color: white; overflow: hidden; font-family: 'Cairo', sans-serif; }
+        
+        body, html { 
+            height: 100%; width: 100%; 
+            background: #000; color: white; 
+            overflow: hidden; font-family: 'Cairo', sans-serif; 
+        }
 
-        /* الخلفية المتحركة */
+        #fade-overlay {
+            position: fixed; inset: 0; background: black; z-index: 9999;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+
         #main-bg {
             position: fixed; inset: 0; z-index: 1;
-            background-image: url('https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg');
-            background-size: cover; background-position: center;
-            transition: background-image 1.2s ease;
-            animation: slowZoom 20s infinite alternate ease-in-out;
+            background-repeat: no-repeat; background-position: center center; background-size: cover;
+            transition: background-image 1.5s ease-in-out;
+            animation: slowZoom 25s infinite alternate ease-in-out;
         }
-        @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
-        /* شاشة البداية */
         #splash { 
-            position: fixed; inset: 0; z-index: 5000; background: #000; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            position: fixed; inset: 0; z-index: 5000; 
+            background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            overflow: hidden;
         }
-        .splash-img { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--neon); box-shadow: 0 0 30px var(--neon); }
 
-        /* بطاقة المحتوى */
-        #ui-layer { position: absolute; inset: 0; z-index: 1000; display: none; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 40px; }
-        .neon-card { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px); padding: 25px; border-radius: 30px; text-align: center; width: 90%; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); }
+        /* تنسيق رسالة التثبيت الإجبارية - مضاف برمجياً */
+        #install-gate {
+            display: none;
+            position: absolute; bottom: 20px; width: 90%;
+            background: rgba(255, 0, 85, 0.9); padding: 15px;
+            border-radius: 15px; text-align: center; font-weight: bold;
+            z-index: 6000; animation: imgPulse 2s infinite;
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 220px; height: 220px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 30px;
+            z-index: 5002;
+        }
+
+        .flower-bg {
+            position: absolute; inset: 0;
+            font-size: 200px; line-height: 220px; text-align: center;
+            animation: rotateFlower 10s infinite linear;
+            opacity: 0.8; filter: drop-shadow(0 0 10px var(--neon));
+        }
+        @keyframes rotateFlower { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .img-container {
+            position: relative;
+            z-index: 5003;
+            animation: imgPulse 2s infinite ease-in-out;
+        }
+
+        .splash-img { 
+            width: 160px; height: 160px; border-radius: 50%; 
+            border: 4px solid var(--neon); object-fit: cover;
+            box-shadow: 0 0 30px var(--neon);
+        }
+
+        @keyframes imgPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .beating-bg-heart {
+            position: absolute; color: rgba(255, 0, 85, 0.4);
+            pointer-events: none;
+            animation: heartPulseFade 3s infinite ease-in-out;
+            z-index: 5001;
+        }
+        @keyframes heartPulseFade {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.5); opacity: 0.6; }
+        }
+
+        #ui-layer { 
+            position: absolute; inset: 0; z-index: 1000; 
+            display: none; flex-direction: column; justify-content: flex-end; align-items: center; 
+            padding-bottom: 5vh;
+        }
+
+        .neon-card { 
+            background: rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(25px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            padding: 25px 20px; border-radius: 40px; 
+            text-align: center; width: 92%; max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        #quote { 
+            font-size: 1.8rem; font-weight: 900; 
+            font-family: 'Lalezar', cursive;
+            text-shadow: 0 0 15px var(--neon);
+            display: block; min-height: 160px; 
+            color: #fff; line-height: 1.4; margin-bottom: 15px;
+        }
+
+        .btn { border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .social-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
+        .btn-social { height: 40px; flex: 1; border-radius: 12px; font-size: 1rem; color: white; text-decoration: none; }
+        .btn-fb { background: var(--fb); }
+        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         
-        #quote { font-size: 1.5rem; font-family: 'Lalezar', cursive; min-height: 120px; display: block; margin-bottom: 20px; color: var(--neon); text-shadow: 0 0 10px rgba(255,0,85,0.5); }
+        .btn-magic { 
+            width: 100%; background: #fff; color: #000; height: 55px; font-size: 1.3rem; 
+            border-radius: 15px; font-weight: 900; box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            position: relative; z-index: 5005;
+        }
 
-        .btn-magic { width: 100%; background: var(--neon); color: white; border: none; padding: 15px; border-radius: 15px; font-weight: 900; font-size: 1.2rem; cursor: pointer; }
+        #beating-heart-main {
+            font-size: 45px; color: var(--neon); cursor: pointer;
+            animation: heartBeat 1.4s infinite; display: inline-block; margin-top: 10px;
+        }
+        @keyframes heartBeat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.25); } }
 
-        /* فيديوهات الطبقات */
-        .video-container { position: fixed; inset: 0; z-index: 2; opacity: 0; transition: opacity 1s; }
-        .active-video { opacity: 0.4; z-index: 3; }
-        iframe { width: 100%; height: 100%; border: none; pointer-events: none; }
+        .btn-back { margin-top: 10px; background: none; color: rgba(255,255,255,0.4); font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
 
-        /* القلوب المتساقطة */
-        .falling-heart { position: fixed; top: -10%; z-index: 8000; animation: fall linear forwards; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+        .btn-designer {
+            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-designer i { color: var(--neon); animation: heartBeat 1.4s infinite; }
+
+        .video-container { position: fixed; inset: 0; z-index: 2; opacity: 0; transition: opacity 1s; overflow: hidden; pointer-events: none; }
+        .active-video { opacity: 0.5; z-index: 3; }
+        iframe { width: 180vw; height: 180vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; }
+
+        .falling-heart {
+            position: fixed; top: -10%; color: var(--neon);
+            font-size: 20px; z-index: 8000; pointer-events: none;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .inner-heart { position: absolute; pointer-events: none; color: var(--neon); z-index: 2000; animation: heartFly 1.2s forwards; }
+        @keyframes heartFly { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
+
+        .hide-card { opacity: 0 !important; transform: translateY(30px); pointer-events: none; }
     </style>
 </head>
-<body>
+<body onmousedown="hideUI()" onmouseup="showUI()" ontouchstart="hideUI()" ontouchend="showUI()">
 
+    <div id="fade-overlay"></div>
     <div id="main-bg"></div>
 
     <div id="splash">
-        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="splash-img">
-        <button class="btn-magic" style="margin-top:30px; width:200px;" onclick="init()">دخول ✨</button>
+        <div id="install-gate">يجب تثبيت التطبيق لفتح السحر 📱✨</div>
+        
+        <script>
+            for(let i=0; i<25; i++) {
+                const h = document.createElement('div');
+                h.className = 'beating-bg-heart';
+                h.innerHTML = '❤️';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.top = Math.random() * 100 + 'vh';
+                h.style.animationDelay = Math.random() * 3 + 's';
+                h.style.fontSize = (Math.random() * 30 + 10) + 'px';
+                document.getElementById('splash').appendChild(h);
+            }
+        </script>
+        
+        <div class="img-wrapper">
+            <div class="flower-bg">🌸</div>
+            <div class="img-container">
+                <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="splash-img">
+            </div>
+        </div>
+        
+        <button id="main-start-btn" class="btn btn-magic" style="width:300px; background: var(--neon); color: white;" onclick="init(event)">
+           🌸 حهورأنہيہة يہا خہال 🌸
+        </button>
     </div>
 
-    <div id="layer1" class="video-container"></div>
-    <div id="layer2" class="video-container"></div>
+    <div id="layer1" class="video-container"><iframe id="player1"></iframe></div>
+    <div id="layer2" class="video-container"><iframe id="player2"></iframe></div>
 
     <div id="ui-layer">
-        <div class="neon-card">
-            <span id="quote"></span>
-            <button class="btn-magic" onclick="nextWave()">سحر جديد 🪄</button>
+        <div class="neon-card" id="mainCard" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
+            <div id="text-box"><span id="quote"></span></div>
+            
+            <div class="social-row">
+                <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-social btn-fb"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/hwrny823?igsh=MWhjM3cwbzd6ZmhjbA==" target="_blank" class="btn btn-social btn-insta"><i class="fab fa-instagram"></i></a>
+                <button class="btn btn-social" style="background: rgba(255,255,255,0.1);" onclick="shareSite(event)"><i class="fas fa-share-alt"></i></button>
+            </div>
+
+            <button class="btn btn-magic" onclick="nextWave(event)">سحر جديد 🪄</button>
+
+            <center><div id="beating-heart-main" onclick="spawnHearts(event)">❤️</div></center>
+            
+            <br>
+            <a href="https://www.instagram.com/m______________ax?igsh=MWh2Y2t1dWQybTVoeg==" target="_blank" class="btn-designer">
+                شكر للمصمم <i class="fas fa-heart"></i>
+            </a>
+            
+            <button class="btn btn-back" onclick="location.reload()">إعادة البداية</button>
         </div>
     </div>
 
     <script>
-        // تفعيل الـ Service Worker
-        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+        // --- قسم منطق التثبيت الإجباري (التطوير البرمجي) ---
+        let deferredPrompt;
+        const startBtn = document.getElementById('main-start-btn');
+        const installGate = document.getElementById('install-gate');
 
+        // التحقق إذا كان التطبيق مفتوحاً بوضع الـ Standalone (مثبت)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+        if (!isStandalone) {
+            // إذا لم يكن مثبتاً، نغير وظيفة الزر لإجبار التثبيت
+            startBtn.innerHTML = "تثبيت التطبيق للبدء 📲";
+            installGate.style.display = "block";
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                startBtn.onclick = async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') {
+                            location.reload();
+                        }
+                    }
+                };
+            });
+
+            // لمستخدمي iPhone (Safari لا يدعم prompt تلقائي)
+            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                startBtn.onclick = () => {
+                    alert("للبدء: اضغطي على زر المشاركة بالأسفل ثم 'Add to Home Screen' 📲");
+                };
+            }
+        }
+
+        // --- باقي وظائف الكود الأصلية دون تغيير ---
         const compliments = [
-            "غدوش.. جمالكِ قصيدة لا تنتهي ✨",
-            "أنتِ الاستثناء الجميل في هذا العالم 👑",
-            "في عيونكِ يسكن سحر الكون يا غدوش 🐚",
-            "يا قمر الليالي، نوركِ يضيء الروح ☀️"
+            "غدوش.. أنتِ لستِ مجرد وجه جميل، أنتِ قصيدة كتبها القمر ونثرتها النجوم على الأرض ✨",
+            "في عيونكِ يغرق الكلام، وفي حضوركِ يصمت الجمال خجلاً من رقتكِ العظيمة يا ملكة الكون 👑",
+            "لو كان للجمال عنوان لكان اسمكِ، ولو كان للسحر موطن لكان بين تفاصيل ملامحكِ الفاتنة 🐚",
+            "أنتِ النادرة التي لا تتكرر، كأنكِ خُلقتِ من خيوط الشمس ومن نقاء الغيم الأبيض ☁️",
+            "حين تبتسمين، يزهر الورد في غير أوانه، ويتنفس العالم عطراً يشبه براءة قلبكِ النقي 🌹",
+            "يا جميلة الروح والطلة، حضوركِ يطغى على كل الأضواء، وكأنكِ الشمس والآخرون كواكب تدور حولكِ ☀️",
+            "غدوش.. أنتِ الاستثناء الوحيد في هذا العالم، فجمالكِ يفوق الخيال وسحركِ لا يدركه وصف 💎",
+            "جمالكِ يا غدوش هو الفن الحقيقي، كلوحة رسمتها يد القدر لتبهر كل من ينظر إليها 🎨",
+            "أنتِ النبض الذي يحيي الأمل، والوجه الذي يبث السكينة في القلوب المتعبة، أنتِ ببساطة معجزة ❤️",
+            "يا قمر الليالي المظلمة، نوركِ يضيء الروح قبل الدروب، وضحكتكِ هي لحن السعادة الأجمل 🎶"
+        ];
+
+        const neonColors = ["#ff0055", "#00ffcc", "#fffb00", "#00ff00", "#ff00ff", "#50b7f5", "#ff8800"];
+        const bgImages = [
+            "https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg", 
+            "https://i.ibb.co/FL93N2BX/7ee93916775239f03813755ed461cc83.jpg",
+            "https://i.ibb.co/3pY6vL6/1.jpg", 
+            "https://i.ibb.co/m0fH4L3/2.jpg"
         ];
         
         const vids = ["2u533q", "70ymh0"];
-        let vIdx = 0;
+        let vIdx = 0, imgIdx = 0, activeP = 1, isTyping = false;
 
-        function init() {
-            document.getElementById('splash').style.display = 'none';
-            document.getElementById('ui-layer').style.display = 'flex';
-            nextWave();
-        }
-
-        function nextWave() {
-            rainHearts();
-            const q = compliments[Math.floor(Math.random()*compliments.length)];
-            document.getElementById('quote').innerText = q;
-
-            // تبديل الفيديو
-            const layer = vIdx % 2 === 0 ? 'layer1' : 'layer2';
-            const other = vIdx % 2 === 0 ? 'layer2' : 'layer1';
-            
-            document.getElementById(layer).innerHTML = `<iframe src="https://streamable.com/e/${vids[vIdx % 2]}?autoplay=1&muted=1&nocontrols=1"></iframe>`;
-            document.getElementById(layer).classList.add('active-video');
-            document.getElementById(other).classList.remove('active-video');
-            
-            vIdx++;
-        }
+        function hideUI() { document.getElementById('mainCard').classList.add('hide-card'); }
+        function showUI() { document.getElementById('mainCard').classList.remove('hide-card'); }
 
         function rainHearts() {
-            for(let i=0; i<20; i++) {
-                const h = document.createElement('div');
-                h.className = 'falling-heart';
-                h.innerHTML = '❤️';
-                h.style.left = Math.random() * 100 + 'vw';
-                h.style.fontSize = Math.random() * 20 + 10 + 'px';
-                h.style.animationDuration = Math.random() * 2 + 2 + 's';
-                document.body.appendChild(h);
-                setTimeout(() => h.remove(), 3000);
+            for(let i=0; i<30; i++) {
+                setTimeout(() => {
+                    const h = document.createElement('div');
+                    h.className = 'falling-heart';
+                    h.innerHTML = '❤️';
+                    h.style.left = Math.random() * 100 + 'vw';
+                    h.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    h.style.color = neonColors[Math.floor(Math.random() * neonColors.length)];
+                    document.body.appendChild(h);
+                    setTimeout(() => h.remove(), 4000);
+                }, i * 50);
             }
+        }
+
+        function spawnHearts(e) {
+            e.stopPropagation();
+            if (navigator.vibrate) navigator.vibrate(50);
+            for(let i=0; i<12; i++) {
+                const h = document.createElement('div');
+                h.className = 'inner-heart'; h.innerHTML = '❤️';
+                h.style.left = '25px'; h.style.top = '10px';
+                h.style.setProperty('--x', (Math.random()-0.5)*400 + 'px');
+                h.style.setProperty('--y', (Math.random()-0.5)*400 - 150 + 'px');
+                e.currentTarget.appendChild(h);
+                setTimeout(() => h.remove(), 1200);
+            }
+        }
+
+        function init(e) {
+            // لا يسمح بالبدء إلا إذا كان التطبيق مثبتاً (أو تخطي في حال كان غير مدعوم)
+            if (!isStandalone && deferredPrompt) return; 
+
+            e.stopPropagation();
+            document.getElementById('splash').style.transition = '0.8s';
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('splash').style.display = 'none';
+                document.getElementById('ui-layer').style.display = 'flex';
+                nextWave();
+            }, 800);
+        }
+
+        function nextWave(e) {
+            if(e) e.stopPropagation();
+            if(isTyping) return;
+            if (navigator.vibrate) navigator.vibrate(40);
+            
+            rainHearts();
+
+            const overlay = document.getElementById('fade-overlay');
+            overlay.style.opacity = '0.7';
+            setTimeout(() => {
+                const clr = neonColors[Math.floor(Math.random()*neonColors.length)];
+                document.documentElement.style.setProperty('--neon', clr);
+                document.getElementById("quote").innerHTML = "";
+                document.getElementById("quote").style.color = clr;
+                
+                imgIdx = Math.floor(Math.random() * bgImages.length);
+                document.getElementById('main-bg').style.backgroundImage = `url('${bgImages[imgIdx]}')`;
+                
+                const nP_id = activeP === 1 ? "player1" : "player2";
+                const oP_id = activeP === 1 ? "player2" : "player1";
+                const nL = activeP === 1 ? "layer1" : "layer2";
+                const oL = activeP === 1 ? "layer2" : "layer1";
+                
+                const nP = document.getElementById(nP_id);
+                const oP = document.getElementById(oP_id);
+
+                oP.src = ""; 
+                nP.src = `https://streamable.com/e/${vids[vIdx]}?autoplay=1&nocontrols=1`;
+                
+                document.getElementById(nL).classList.add('active-video');
+                document.getElementById(oL).classList.remove('active-video');
+                
+                overlay.style.opacity = '0';
+                startTyping();
+                vIdx = (vIdx + 1) % vids.length; 
+                activeP = activeP === 1 ? 2 : 1;
+            }, 400);
+        }
+
+        function startTyping() {
+            isTyping = true;
+            const text = compliments[Math.floor(Math.random()*compliments.length)];
+            let i = 0;
+            const inv = setInterval(() => {
+                if(i < text.length) { document.getElementById("quote").innerHTML += text[i++]; }
+                else { clearInterval(inv); isTyping = false; }
+            }, 50);
+        }
+
+        async function shareSite(e) {
+            e.stopPropagation();
+            if (navigator.share) await navigator.share({ title: 'Ghadoush', url: window.location.href });
         }
     </script>
 </body>
