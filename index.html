@@ -5,254 +5,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ghadoush Universe ✨</title>
     
-    <link rel="manifest" href="manifest.json">
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-    </script>
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg">
-    <meta name="theme-color" content="#ff0055">
-    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Cairo:wght@900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --neon: #ff0055; --fb: #1877f2; --insta: #e4405f; }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { height: 100%; width: 100%; background: #000; color: white; overflow: hidden; font-family: 'Cairo', sans-serif; }
-        #fade-overlay { position: fixed; inset: 0; background: black; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
-        #main-bg { position: fixed; inset: 0; z-index: 1; background-repeat: no-repeat; background-position: center center; background-size: cover; transition: background-image 1.5s ease-in-out; animation: slowZoom 25s infinite alternate ease-in-out; }
-        @keyframes slowZoom { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
-        #splash { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
-        .img-wrapper { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; z-index: 5002; }
-        .flower-bg { position: absolute; inset: 0; font-size: 200px; line-height: 220px; text-align: center; animation: rotateFlower 10s infinite linear; opacity: 0.8; filter: drop-shadow(0 0 10px var(--neon)); }
-        @keyframes rotateFlower { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .img-container { position: relative; z-index: 5003; animation: imgPulse 2s infinite ease-in-out; }
-        .splash-img { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--neon); object-fit: cover; box-shadow: 0 0 30px var(--neon); }
-        @keyframes imgPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        #ui-layer { position: absolute; inset: 0; z-index: 1000; display: none; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 5vh; }
-        .neon-card { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 25px 20px; border-radius: 40px; text-align: center; width: 92%; max-width: 420px; box-shadow: 0 25px 50px rgba(0,0,0,0.9); transition: 0.4s; }
-        #quote { font-size: 1.8rem; font-weight: 900; font-family: 'Lalezar', cursive; text-shadow: 0 0 15px var(--neon); display: block; min-height: 160px; color: #fff; line-height: 1.4; margin-bottom: 15px; }
-        .btn { border: none; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
-        .social-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
-        .btn-social { height: 40px; flex: 1; border-radius: 12px; font-size: 1rem; color: white; text-decoration: none; }
-        .btn-fb { background: var(--fb); }
-        .btn-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-        .btn-magic { width: 100%; background: #fff; color: #000; height: 55px; font-size: 1.3rem; border-radius: 15px; font-weight: 900; box-shadow: 0 0 20px rgba(255,255,255,0.2); position: relative; z-index: 5005; }
-        #beating-heart-main { font-size: 45px; color: var(--neon); cursor: pointer; animation: heartBeat 1.4s infinite; display: inline-block; margin-top: 10px; }
-        @keyframes heartBeat { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.25); } }
-        
-        /* زر الرجوع */
-        .btn-back { margin-top: 10px; background: none; color: rgba(255,255,255,0.4); font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); width: 100px; margin-inline: auto; }
-        
-        /* زر التثبيت الجديد */
-        #pwa-install-btn { display: none; margin-bottom: 15px; background: var(--neon); color: white; border-radius: 12px; padding: 10px; font-weight: bold; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        :root { --neon: #ff0055; --glow: 20px; --bg-tint: rgba(0,0,0,0.7); }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none !important; }
+        body, html { height: 100%; width: 100%; background: #000; color: white; overflow: hidden; font-family: 'Cairo', sans-serif; perspective: 1000px; }
 
-        /* صفحة المدير */
-        #admin-panel { display: none; margin-top: 15px; border: 1px dashed #ff0055; padding: 10px; border-radius: 15px; }
-        .btn-reset { background: #ff3333; color: white; padding: 5px 15px; border-radius: 8px; font-size: 0.8rem; margin-top: 5px; }
+        /* الخلفية والنجوم */
+        #main-bg { position: fixed; inset: -20px; z-index: 1; background-image: url('https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg'); background-size: cover; background-position: center; transition: 1.5s ease-in-out; animation: slowZoom 25s infinite alternate ease-in-out; }
+        @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+        .star { position: fixed; background: white; border-radius: 50%; pointer-events: none; opacity: 0; animation: star-glow 2s infinite; z-index: 2; }
+        @keyframes star-glow { 0%, 100% { opacity: 0; } 50% { opacity: 0.8; } }
 
-        .video-container { position: fixed; inset: 0; z-index: 2; opacity: 0; transition: opacity 1s; overflow: hidden; pointer-events: none; }
-        .active-video { opacity: 0.5; z-index: 3; }
-        iframe { width: 180vw; height: 180vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: none; }
+        /* شاشة الدخول */
+        #splash { position: fixed; inset: 0; z-index: 5000; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s; }
+        .splash-img { width: 160px; height: 160px; border-radius: 50%; border: 4px solid var(--neon); object-fit: cover; box-shadow: 0 0 var(--glow) var(--neon); }
         
-        /* تأثير تساقط الإيموجيات */
-        .falling-emoji { position: fixed; top: -10%; z-index: 8000; pointer-events: none; animation: fall linear forwards; font-size: 24px; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+        /* البطاقة الرئيسية */
+        #ui-layer { position: absolute; inset: 0; z-index: 1000; display: none; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 5vh; transform-style: preserve-3d; }
+        .neon-card { background: var(--bg-tint); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 25px 20px; border-radius: 40px; text-align: center; width: 92%; max-width: 420px; transition: 0.1s linear; border-bottom: 4px solid var(--neon); position: relative; }
+        
+        #quote { font-size: 1.8rem; font-weight: 900; font-family: 'Lalezar', cursive; text-shadow: 0 0 var(--glow) var(--neon); display: block; min-height: 160px; color: #fff; line-height: 1.4; margin-bottom: 15px; cursor: pointer; }
+        .speaking { animation: textGlow 1.5s infinite alternate; }
+        @keyframes textGlow { from { text-shadow: 0 0 10px var(--neon); } to { text-shadow: 0 0 30px var(--neon), 0 0 40px white; } }
 
-        .inner-heart { position: absolute; pointer-events: none; color: var(--neon); z-index: 2000; animation: heartFly 1.2s forwards; }
-        @keyframes heartFly { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; } }
-        .hide-card { opacity: 0 !important; transform: translateY(30px); pointer-events: none; }
-        #visit-count-ui { margin-top: 10px; font-size: 0.7rem; color: #555; }
+        .btn-magic { width: 100%; background: #fff; color: #000; height: 55px; font-size: 1.3rem; font-weight: 900; border-radius: 15px; border:none; cursor:pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        /* الخزنة والرسائل */
+        #secret-vault { position: fixed; inset: 0; z-index: 10000; background: #000; display: none; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; overflow-y: auto; }
+        .vault-img { width: 100%; border-radius: 15px; border: 1px solid var(--neon); }
+        #msg-box { display: none; position: absolute; inset: 15px; background: rgba(0,0,0,0.98); border-radius: 30px; z-index: 6000; flex-direction: column; padding: 20px; border: 1px solid var(--neon); }
+        #msg-input { background: transparent; border: 1px solid #333; border-radius: 15px; color: white; padding: 15px; flex: 1; font-family: 'Cairo'; outline: none; }
+        #video-container { position: fixed; inset: 0; z-index: 0; display: none; pointer-events: none; }
+        iframe { width: 100%; height: 100%; border: none; opacity: 0.6; }
     </style>
 </head>
-<body onmousedown="hideUI()" onmouseup="showUI()" ontouchstart="hideUI()" ontouchend="showUI()">
+<body oncontextmenu="return false;">
 
-    <div id="fade-overlay"></div>
+    <audio id="bgMusic" loop><source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg"></audio>
     <div id="main-bg"></div>
+    <div id="video-container"></div>
+    <div id="stars-container"></div>
 
-    <div id="splash">
-        <div class="img-wrapper">
-            <div class="flower-bg">🌸</div>
-            <div class="img-container">
-                <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="splash-img">
-            </div>
-        </div>
-        <button id="start-btn" class="btn btn-magic" style="width:300px; background: var(--neon); color: white;" onclick="init(event)">
-           🌸 حهورأنہيہة يہا خہال 🌸
-        </button>
+    <div id="secret-vault">
+        <h2 style="grid-column: 1 / -1; text-align: center; color: var(--neon); padding: 20px;">خزنة الذكريات السحرية ✨</h2>
+        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="vault-img">
+        <button onclick="document.getElementById('secret-vault').style.display='none'" style="grid-column: 1 / -1; padding: 15px; background: white; border-radius: 15px; margin-top: 20px; font-weight: bold;">إغلاق الخزنة</button>
     </div>
 
-    <div id="layer1" class="video-container"><iframe id="player1"></iframe></div>
-    <div id="layer2" class="video-container"><iframe id="player2"></iframe></div>
+    <div id="splash">
+        <img src="https://i.ibb.co/5WgXmYqc/FB-IMG-1772058101659.jpg" class="splash-img" id="secretTrigger">
+        <div style="color: var(--neon); font-weight: bold; margin-top: 20px;">🌸 حهورأنہيہة يہا خہال 🌸</div> 
+        <button class="btn-magic" style="width:280px; background: var(--neon); color: white; margin-top:30px;" onclick="init()">دخول لعالم غدوش ✨</button>
+    </div>
 
     <div id="ui-layer">
-        <div class="neon-card" id="mainCard" onmousedown="event.stopPropagation()" ontouchstart="event.stopPropagation()">
-            
-            <button id="pwa-install-btn" onclick="installPWA()">تثبيت تطبيق غدوش ✨</button>
-
-            <div id="text-box"><span id="quote"></span></div>
-            <div class="social-row">
-                <a href="https://www.facebook.com/share/18CFRsDyg2/" target="_blank" class="btn btn-social btn-fb"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://www.instagram.com/hwrny823?igsh=MWhjM3cwbzd6ZmhjbA==" target="_blank" class="btn btn-social btn-insta"><i class="fab fa-instagram"></i></a>
+        <div class="neon-card" id="mainCard">
+            <div id="msg-box">
+                <textarea id="msg-input" placeholder="اكتبي لقلبي..."></textarea>
+                <button class="btn-magic" style="margin-top:10px; background:var(--neon); color:white" onclick="sendToCloud()">إرسال ❤️</button>
+                <button onclick="toggleMsgBox()" style="background:none; border:none; color:#555; margin-top:5px;">إغلاق</button>
             </div>
-            <button class="btn btn-magic" onclick="nextWave(event)">سحر جديد 🪄</button>
-            <center><div id="beating-heart-main" onclick="spawnHearts(event)">❤️</div></center>
             
-            <div id="visit-count-ui">محبين غدوش: <span id="v-num">0</span></div>
+            <div id="text-box"><span id="quote" onclick="speakQuote()"></span></div>
             
-            <div id="admin-panel">
-                <p style="color:var(--neon); font-size:0.8rem;">لوحة التحكم</p>
-                <button class="btn btn-reset" onclick="resetCounter()">تصفير العداد 🔄</button>
-            </div>
-
-            <button class="btn btn-back" onclick="resetApp()">إعادة البداية</button>
+            <button class="btn-magic" onclick="nextWave()">سحر جديد 🪄</button>
+            
+            <center style="margin-top:15px; display:flex; justify-content:center; gap:40px; align-items:center">
+                <i class="fas fa-music" id="musicIcon" style="opacity:0.4; cursor:pointer" onclick="toggleMusic()"></i>
+                <div id="heart" style="font-size:50px; cursor:pointer;" onclick="spawnHearts(event)">❤️</div>
+                <i class="fas fa-envelope-open-text" style="opacity:0.4; cursor:pointer" onclick="toggleMsgBox()"></i>
+            </center>
+            <div style="font-size:0.6rem; color:#444; margin-top:10px;">اضغطي على الكلام ليُهمس لكِ 🎙️</div>
         </div>
     </div>
 
     <script>
+        // إعدادات Firebase
+        const firebaseConfig = { apiKey: "AIzaSyBcbf6AnqVs46gBw2dNjC9TREbx5f4DfJM", authDomain: "ghadoush-app.firebaseapp.com", projectId: "ghadoush-app", databaseURL: "https://ghadoush-app-default-rtdb.firebaseio.com" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // الجمل الأصلية العشرة
         const compliments = [
-            "غدوش.. أنتِ لستِ مجرد وجه جميل، أنتِ قصيدة كتبها القمر ونثرتها النجوم على الأرض ✨",
-            "في عيونكِ يغرق الكلام، وفي حضوركِ يصمت الجمال خجلاً من رقتكِ العظيمة يا ملكة الكون 👑",
-            "لو كان للجمال عنوان لكان اسمكِ، ولو كان للسحر موطن لكان بين تفاصيل ملامحكِ الفاتنة 🐚",
-            "أنتِ النادرة التي لا تتكرر، كأنكِ خُلقتِ من خيوط الشمس ومن نقاء الغيم الأبيض ☁️",
-            "حين تبتسمين، يزهر الورد في غير أوانه، ويتنفس العالم عطراً يشبه براءة قلبكِ النقي 🌹",
-            "يا جميلة الروح والطلة، حضوركِ يطغى على كل الأضواء، وكأنكِ الشمس والآخرون كواكب تدور حولكِ ☀️",
-            "غدوش.. أنتِ الاستثناء الوحيد في هذا العالم، فجمالكِ يفوق الخيال وسحركِ لا يدركه وصف 💎",
-            "جمالكِ يا غدوش هو الفن الحقيقي، كلوحة رسمتها يد القدر لتبهر كل من ينظر إليها 🎨",
-            "أنتِ النبض الذي يحيي الأمل، والوجه الذي يبث السكينة في القلوب المتعبة، أنتِ ببساطة معجزة ❤️",
-            "يا قمر الليالي المظلمة، نوركِ يضيء الروح قبل الدروب، وضحكتكِ هي لحن السعادة الأجمل 🎶"
+            "غدوش.. أنتِ لستِ مجرد وجه جميل، أنتِ قصيدة كتبها القمر ونثرتها النجوم ✨",
+            "في عيونكِ يغرق الكلام، وفي حضوركِ يصمت الجمال خجلاً يا ملكة الكون 👑",
+            "لو كان للجمال عنوان لكان اسمكِ، ولو كان للسحر موطن لكان بين تفاصيل ملامحكِ 🐚",
+            "أنتِ النادرة التي لا تتكرر، كأنكِ خُلقتِ من خيوط الشمس ومن نقاء الغيم ☁️",
+            "حين تبتسمين، يزهر الورد في غير أوانه، ويتنفس العالم عطراً يشبه قلبكِ 🌹",
+            "يا جميلة الروح والطلة، حضوركِ يطغى على كل الأضواء، وكأنكِ الشمس ☀️",
+            "غدوش.. أنتِ الاستثناء الوحيد، فجمالكِ يفوق الخيال وسحركِ لا يدركه وصف 💎",
+            "جمالكِ هو الفن الحقيقي، كلوحة رسمتها يد القدر لتبهر كل من ينظر إليها 🎨",
+            "أنتِ النبض الذي يحيي الأمل، والوجه الذي يبث السكينة في القلوب المتعبة ❤️",
+            "يا قمر الليالي المظلمة، نوركِ يضيء الروح قبل الدروب، وضحكتكِ هي لحن السعادة 🎶"
         ];
 
-        const emojis = ["❤️", "🌸", "✨", "👑", "🌹", "🦋", "💎"];
-        const vids = ["2u533q", "70ymh0"];
-        let vIdx = 0, activeP = 1, isTyping = false, deferredPrompt;
+        let vIdx = 0, isTyping = false;
 
-        // ميزة التثبيت
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('pwa-install-btn').style.display = 'block';
+        // الربط بالتحكم عن بعد
+        db.ref('live_control').on('value', (snap) => {
+            const data = snap.val(); if(!data) return;
+            if(data.text) typeEffect(data.text);
+            if(data.bg) document.getElementById('main-bg').style.backgroundImage = `url('${data.bg}')`;
+            if(data.video) {
+                const v = document.getElementById('video-container'); v.style.display = 'block';
+                v.innerHTML = `<iframe src="https://www.youtube.com/embed/${data.video}?autoplay=1&mute=1&loop=1"></iframe>`;
+            } else { document.getElementById('video-container').style.display = 'none'; }
         });
 
-        async function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('pwa-install-btn').style.display = 'none';
-                }
-                deferredPrompt = null;
+        function typeEffect(text) {
+            const q = document.getElementById("quote"); q.innerHTML = ""; isTyping = true; let i = 0;
+            const timer = setInterval(() => { if(i < text.length) q.innerHTML += text[i++]; else { clearInterval(timer); isTyping = false; } }, 50);
+        }
+
+        function init() {
+            createStars();
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('ui-layer').style.display = 'flex';
+            typeEffect(compliments[0]);
+        }
+
+        function nextWave() { vIdx = (vIdx + 1) % compliments.length; typeEffect(compliments[vIdx]); }
+
+        function speakQuote() {
+            const m = new SpeechSynthesisUtterance(document.getElementById('quote').innerText);
+            m.lang = 'ar-SA'; m.onstart = () => document.getElementById('quote').classList.add('speaking');
+            m.onend = () => document.getElementById('quote').classList.remove('speaking');
+            window.speechSynthesis.speak(m);
+        }
+
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            for(let i=0; i<50; i++) {
+                const s = document.createElement('div'); s.className = 'star';
+                s.style.left = Math.random()*100+'%'; s.style.top = Math.random()*100+'%';
+                s.style.animationDelay = Math.random()*5+'s'; container.appendChild(s);
             }
-        }
-
-        // منطق العداد والمدير
-        function trackVisits() {
-            if (window.location.hash === "#admin") {
-                localStorage.setItem('isAdmin', 'true');
-                document.getElementById('admin-panel').style.display = 'block';
-            }
-
-            if (localStorage.getItem('isAdmin')) {
-                document.getElementById('v-num').innerText = localStorage.getItem('g_visits') || 0;
-                document.getElementById('admin-panel').style.display = 'block';
-                return;
-            }
-
-            let count = localStorage.getItem('g_visits') || 0;
-            count++;
-            localStorage.setItem('g_visits', count);
-            document.getElementById('v-num').innerText = count;
-        }
-
-        function resetCounter() {
-            localStorage.setItem('g_visits', 0);
-            document.getElementById('v-num').innerText = 0;
-            alert("تم تصفير العداد بنجاح!");
-        }
-
-        function hideUI() { document.getElementById('mainCard').classList.add('hide-card'); }
-        function showUI() { document.getElementById('mainCard').classList.remove('hide-card'); }
-
-        function init(e) {
-            trackVisits();
-            document.getElementById('splash').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splash').style.display = 'none';
-                document.getElementById('ui-layer').style.display = 'flex';
-                nextWave();
-            }, 800);
-        }
-
-        function resetApp() {
-            document.getElementById('ui-layer').style.display = 'none';
-            document.getElementById('splash').style.display = 'flex';
-            document.getElementById('splash').style.opacity = '1';
-            document.getElementById('player1').src = "";
-            document.getElementById('player2').src = "";
-        }
-
-        // ميزة تساقط الإيموجيات والقلوب بكل ضغطة
-        function rainMagic() {
-            for(let i=0; i<40; i++) {
-                setTimeout(() => {
-                    const e = document.createElement('div');
-                    e.className = 'falling-emoji';
-                    e.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-                    e.style.left = Math.random() * 100 + 'vw';
-                    e.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                    document.body.appendChild(e);
-                    setTimeout(() => e.remove(), 4000);
-                }, i * 40);
-            }
-        }
-
-        function nextWave(e) {
-            if(isTyping) return;
-            rainMagic();
-            const overlay = document.getElementById('fade-overlay');
-            overlay.style.opacity = '0.7';
-            setTimeout(() => {
-                document.getElementById("quote").innerHTML = "";
-                const nP = document.getElementById(activeP === 1 ? "player1" : "player2");
-                const oP = document.getElementById(activeP === 1 ? "player2" : "player1");
-                oP.src = ""; 
-                nP.src = `https://streamable.com/e/${vids[vIdx]}?autoplay=1&nocontrols=1`;
-                document.getElementById(activeP === 1 ? "layer1" : "layer2").classList.add('active-video');
-                document.getElementById(activeP === 1 ? "layer2" : "layer1").classList.remove('active-video');
-                overlay.style.opacity = '0';
-                startTyping();
-                vIdx = (vIdx + 1) % vids.length; 
-                activeP = activeP === 1 ? 2 : 1;
-            }, 400);
-        }
-
-        function startTyping() {
-            isTyping = true;
-            const text = compliments[Math.floor(Math.random()*compliments.length)];
-            let i = 0;
-            const inv = setInterval(() => {
-                if(i < text.length) { document.getElementById("quote").innerHTML += text[i++]; }
-                else { clearInterval(inv); isTyping = false; }
-            }, 50);
         }
 
         function spawnHearts(e) {
-            e.stopPropagation();
             for(let i=0; i<8; i++) {
-                const h = document.createElement('div');
-                h.className = 'inner-heart'; h.innerHTML = '❤️';
-                h.style.left = '25px'; h.style.top = '10px';
-                h.style.setProperty('--x', (Math.random()-0.5)*300 + 'px');
-                h.style.setProperty('--y', (Math.random()-0.5)*300 - 100 + 'px');
-                e.currentTarget.appendChild(h);
-                setTimeout(() => h.remove(), 1200);
+                const h = document.createElement('div'); h.innerHTML = '❤️'; h.style.position = 'absolute';
+                h.animate([{transform:'scale(1)', opacity:1}, {transform:`translate(${(Math.random()-0.5)*300}px, -250px) scale(0)`, opacity:0}], 1200);
+                e.currentTarget.appendChild(h); setTimeout(() => h.remove(), 1200);
             }
         }
+
+        function toggleMsgBox() { const b = document.getElementById('msg-box'); b.style.display = (b.style.display==='flex') ? 'none' : 'flex'; }
+        function sendToCloud() {
+            const v = document.getElementById('msg-input').value; if(!v) return;
+            db.ref('messages').push({ text: v, time: Date.now() });
+            document.getElementById('msg-input').value = ""; toggleMsgBox(); alert("وصلت لقلبي ❤️");
+        }
+        function toggleMusic() { 
+            const m = document.getElementById('bgMusic'); 
+            if(m.paused) { m.play(); document.getElementById('musicIcon').style.opacity = "1"; }
+            else { m.pause(); document.getElementById('musicIcon').style.opacity = "0.4"; }
+        }
+
+        let pressTimer;
+        document.getElementById('secretTrigger').addEventListener('touchstart', () => pressTimer = setTimeout(() => document.getElementById('secret-vault').style.display='grid', 3000));
+        document.getElementById('secretTrigger').addEventListener('touchend', () => clearTimeout(pressTimer));
     </script>
 </body>
 </html>
