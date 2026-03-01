@@ -2,31 +2,54 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>تحكم غدوش 🚀</title>
+    <title>تحكم عالم غدوش 🚀</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
         body { background: #000; color: #fff; font-family: sans-serif; padding: 20px; text-align: center; }
-        input, textarea { width: 90%; padding: 10px; margin: 10px; border-radius: 10px; border: 1px solid #ff0055; background: #111; color: #fff; }
-        button { padding: 15px 30px; background: #ff0055; color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .msg { background: #222; padding: 10px; margin: 5px; border-radius: 5px; text-align: right; border-right: 3px solid #ff0055; }
+        .card { background: #111; padding: 20px; border-radius: 20px; border: 1px solid #ff0055; width: 100%; max-width: 450px; margin: auto; }
+        textarea, input { width: 95%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #fff; border-radius: 10px; }
+        button { width: 100%; padding: 15px; background: #ff0055; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .msg { background: #1a1a1a; padding: 10px; margin-top: 5px; border-right: 4px solid #ff0055; text-align: right; }
     </style>
 </head>
 <body>
-    <h2>التحكم في عالم غدوش ✨</h2>
-    <textarea id="t" placeholder="اكتب رسالة تظهر لغدوش الآن..."></textarea>
-    <input id="b" placeholder="رابط صورة خلفية...">
-    <input id="v" placeholder="ID فيديو يوتيوب (مثال: dQw4w9WgXcQ)">
-    <button onclick="send()">تحديث الموقع فوراً 🪄</button>
+    <div class="card">
+        <h2>لوحة التحكم السحرية 🪄</h2>
+        <textarea id="t" placeholder="اكتب لغدوش شيئاً يظهر فوراً..."></textarea>
+        <input id="b" placeholder="رابط صورة خلفية جديدة...">
+        <input id="v" placeholder="يوتيوب ID (مثال: 5Wn4n64S_fU)">
+        <button onclick="update()">تحديث الموقع الآن ✨</button>
+    </div>
 
-    <h3 style="margin-top:30px;">رسائل غدوش الواردة:</h3>
-    <div id="list"></div>
+    <div style="max-width:450px; margin: 30px auto;">
+        <h3>رسائل غدوش 💌</h3>
+        <div id="list"></div>
+    </div>
 
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyBcbf6AnqVs46gBw2dNjC9TREbx5f4DfJM", authDomain: "ghadoush-app.firebaseapp.com", projectId: "ghadoush-app", databaseURL: "https://ghadoush-app-default-rtdb.firebaseio.com" };
-        firebase.initializeApp(firebaseConfig); const db = firebase.database();
-        function send() { db.ref('live_control').set({ text: document.getElementById('t').value, bg: document.getElementById('b').value, video: document.getElementById('v').value }); alert("تم الإرسال!"); }
-        db.ref('messages').on('child_added', (s) => { const d = s.val(); const div = document.createElement('div'); div.className = 'msg'; div.innerText = d.text; document.getElementById('list').prepend(div); });
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcbf6AnqVs46gBw2dNjC9TREbx5f4DfJM",
+            authDomain: "ghadoush-app.firebaseapp.com",
+            databaseURL: "https://ghadoush-app-default-rtdb.firebaseio.com",
+            projectId: "ghadoush-app"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        function update() {
+            db.ref('live_control').set({
+                text: document.getElementById('t').value,
+                bg: document.getElementById('b').value,
+                video: document.getElementById('v').value
+            }).then(() => alert("تم التحديث بنجاح!"));
+        }
+
+        db.ref('messages').on('child_added', (s) => {
+            const d = s.val();
+            const div = `<div class="msg">${d.text}</div>`;
+            document.getElementById('list').insertAdjacentHTML('afterbegin', div);
+        });
     </script>
 </body>
 </html>
